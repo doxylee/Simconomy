@@ -1,6 +1,8 @@
-init :
+init:
 	yarn
 
-run :
+run:
 	yarn dev
 
+build:
+	yarn build
