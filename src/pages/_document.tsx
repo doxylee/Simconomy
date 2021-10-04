@@ -6,7 +6,6 @@ export default class MyDocument extends Document {
         return (
             <Html>
                 <Head>
-                    <title>Simconomy</title>
                     {
                         // Google Analytics
                         settings.ENV && settings.GA4TrackingId && (
