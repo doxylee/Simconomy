@@ -1,4 +1,4 @@
-class StructuredException {
+class StructuredException extends Error {
     type: string = "StringifiableException";
 
     get message() {
@@ -16,6 +16,10 @@ export class EntityNotFoundException extends StructuredException {
         this.entityType = entityType;
         this.entityId = entityType;
     }
+
+    get message() {
+        return `Entity with id "${this.entityId}" of type ${this.entityType} is not found`;
+    }
 }
 
 export class InvalidOperationException extends StructuredException {
@@ -25,6 +29,10 @@ export class InvalidOperationException extends StructuredException {
     constructor({ reason }: { reason: string }) {
         super();
         this.reason = reason;
+    }
+
+    get message() {
+        return `Invalid operation occurred. Reason: ${this.reason}`;
     }
 }
 
@@ -36,6 +44,10 @@ export class ConflictException extends StructuredException {
         super();
         this.reason = reason;
     }
+    
+    get message() {
+        return `Conflict occurred. Reason: ${this.reason}`;
+    }
 }
 
 export class UnexpectedError extends StructuredException {
@@ -45,6 +57,10 @@ export class UnexpectedError extends StructuredException {
     constructor({ reason }: { reason: string }) {
         super();
         this.reason = reason;
+    }
+    
+    get message() {
+        return `Error that should never happen occurred! Reason: ${this.reason}`;
     }
 }
 
