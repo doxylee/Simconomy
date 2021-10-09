@@ -10,6 +10,8 @@
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
     "@mui/material": "^5.0.2",
+    "@types/node": "15",
+    "bignumber.js": "^9.0.1",
     "lodash": "^4.17.21",
     "next": "^11.1.2",
     "react": "^17.0.2",
