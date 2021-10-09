@@ -1,12 +1,13 @@
 import { ConflictException, EntityNotFoundException, UnexpectedError } from "@core/common/exceptions";
 import { Entity } from "@core/common/entity";
 import { FilterExpression, SortExpression } from "@core/common/repository";
+import cloneDeep from "lodash/cloneDeep";
 
 const DEFAULT_QUERY_LIMIT = 20;
 
-export class IDBMemoryHybridRepository<E extends Entity, FE extends FilterExpression<keyof Entity>, S extends Extract<keyof E, string>> {
+export class IDBMemoryHybridRepository<E extends Entity, FES extends FilterExpression<keyof Entity>, SS extends Extract<keyof E, string>> {
     gameId: string;
-    entityType: string = "";
+    entityType: string = "NOT SPECIFIED IN REPOSITORY";
     store: Record<string, E>;
 
     constructor({ gameId }: { gameId: string }) {
@@ -14,21 +15,21 @@ export class IDBMemoryHybridRepository<E extends Entity, FE extends FilterExpres
         this.store = {};
     }
 
-    static open({ gameId }: { gameId: string }) {
+    static async open({ gameId }: { gameId: string }) {
         const repository = new this({ gameId });
         throw "Not implemented";
     }
 
-    save(params?: { saveAs?: string }) {
+    async save(params?: { saveAs?: string }) {
         throw "Not implemented";
     }
 
-    create(entity: E) {
+    async create(entity: E) {
         if (this.store[entity.id]) throw new ConflictException({ reason: "Entity with same id already exists." });
-        this.store[entity.id] = entity;
+        this.store[entity.id] = cloneDeep(entity);
     }
 
-    read(id: string) {
+    async read(id: string) {
         const found = this.store[id];
         if (found === undefined) throw new EntityNotFoundException({ entityType: this.entityType, entityId: id });
         return found;
@@ -44,28 +45,28 @@ export class IDBMemoryHybridRepository<E extends Entity, FE extends FilterExpres
      * @param params.offset - Offset of entities to get
      * @param params.count - Whether to get total number of entities that match filter conditions.
      */
-    query<C extends boolean = true>(params?: {
-        filter?: FE[];
-        sort?: SortExpression<S>[];
+    async query<C extends boolean = true>(params?: {
+        filter?: FES[];
+        sort?: SortExpression<SS>[];
         limit?: number | null;
         offset?: number;
         count?: C;
-    }): C extends false ? E[] : E[] & { total: number };
-    query({
+    }): Promise<C extends false ? E[] : E[] & { total: number }>;
+    async query({
         filter,
         sort,
         limit = DEFAULT_QUERY_LIMIT,
         offset = 0,
         count = true,
     }: {
-        filter?: FE[];
-        sort?: SortExpression<S>[];
+        filter?: FES[];
+        sort?: SortExpression<SS>[];
         limit?: number | null;
         offset?: number;
         count?: boolean;
-    } = {}): E[] & { total?: number } {
+    } = {}): Promise<E[] & { total?: number }> {
         let entities = Object.values(this.store);
-        
+
         // Filter if requested
         if (filter) {
             const filterFunc = (e: E) =>
@@ -91,17 +92,17 @@ export class IDBMemoryHybridRepository<E extends Entity, FE extends FilterExpres
             entities = entities.filter(filterFunc);
         }
         const totalCount = entities.length;
-        
+
         // When only total count is needed, return right after filter
-        if(limit === 0){
+        if (limit === 0) {
             // If even total count is not needed, return empty array.
-            if(!count) return [];
-            
+            if (!count) return [];
+
             const result: E[] & { total: number } = [] as unknown as E[] & { total: number };
             result.total = totalCount;
             return result;
         }
-        
+
         // Sort if needed
         if (sort) {
             const parsedSort = sort.map((s): { asc: 1 | -1; name: keyof E } => ({
@@ -118,31 +119,31 @@ export class IDBMemoryHybridRepository<E extends Entity, FE extends FilterExpres
             };
             entities.sort(sortFunc);
         }
-        
+
         // If limit is needed
-        if(limit !== null){
-            entities = entities.slice(offset, offset + limit)
+        if (limit !== null) {
+            entities = entities.slice(offset, offset + limit);
         }
-        
+
         // If no limit but offset exists, apply offset
-        else if(offset){
-            entities = entities.slice(offset)
+        else if (offset) {
+            entities = entities.slice(offset);
         }
-        
-        if(!count) return entities; // Return only array if count is not needed.
-        
+
+        if (!count) return entities; // Return only array if count is not needed.
+
         const result: E[] & { total: number } = entities as E[] & { total: number };
         result.total = totalCount;
         return result;
     }
 
-    update(entity: Partial<E> & { id: string }) {
+    async update(entity: Partial<E> & { id: string }) {
         const found = this.store[entity.id];
         if (!found) throw new EntityNotFoundException({ entityType: this.entityType, entityId: entity.id });
         this.store[entity.id] = { ...found, ...entity };
     }
 
-    delete(id: string) {
+    async delete(id: string) {
         if (!this.store[id]) throw new EntityNotFoundException({ entityType: this.entityType, entityId: id });
         delete this.store[id];
     }

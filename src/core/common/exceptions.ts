@@ -14,7 +14,7 @@ export class EntityNotFoundException extends StructuredException {
     constructor({ entityType, entityId }: { entityType: string; entityId: string }) {
         super();
         this.entityType = entityType;
-        this.entityId = entityType;
+        this.entityId = entityId;
     }
 
     get message() {
