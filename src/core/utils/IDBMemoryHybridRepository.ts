@@ -2,10 +2,15 @@ import { ConflictException, EntityNotFoundException, UnexpectedError } from "@co
 import { Entity } from "@core/common/entity";
 import { FilterExpression, SortExpression } from "@core/common/repository";
 import cloneDeep from "lodash/cloneDeep";
+import { arrayWithTotal } from "@core/utils/arrayWithTotal";
 
 const DEFAULT_QUERY_LIMIT = 20;
 
-export class IDBMemoryHybridRepository<E extends Entity, FES extends FilterExpression<keyof Entity>, SS extends Extract<keyof E, string>> {
+export class IDBMemoryHybridRepository<
+    E extends Entity,
+    FES extends FilterExpression<Extract<keyof E, string>>,
+    SS extends Extract<keyof E, string>
+> {
     gameId: string;
     entityType: string = "NOT SPECIFIED IN REPOSITORY";
     store: Record<string, E>;
@@ -38,10 +43,13 @@ export class IDBMemoryHybridRepository<E extends Entity, FES extends FilterExpre
     /**
      * Get entities which match filter conditions in requested order, limit, offset.
      * Also get total number of entities that matches filter conditions.
+     *
+     * WARNING: null acts like 0 when compared, sorted with number, BigNumber values.
+     *
      * @param params
      * @param params.filter - Conditions to filter entities.
      * @param params.sort - Which fields to sort result with.
-     * @param params.limit - Max number of entities to get.
+     * @param params.limit - Max number of entities to get. Set to null to set no limit. Defaults to 20(DEFAULT_QUERY_LIMIT) if not specified.
      * @param params.offset - Offset of entities to get
      * @param params.count - Whether to get total number of entities that match filter conditions.
      */
@@ -95,18 +103,17 @@ export class IDBMemoryHybridRepository<E extends Entity, FES extends FilterExpre
 
         // When only total count is needed, return right after filter
         if (limit === 0) {
-            // If even total count is not needed, return empty array.
+            // If total count is also not needed (calling query was pointless), return empty array.
+            // TODO: show warning log
             if (!count) return [];
 
-            const result: E[] & { total: number } = [] as unknown as E[] & { total: number };
-            result.total = totalCount;
-            return result;
+            return arrayWithTotal([], totalCount);
         }
 
         // Sort if needed
         if (sort) {
             const parsedSort = sort.map((s): { asc: 1 | -1; name: keyof E } => ({
-                asc: s.charAt(0) !== "-" ? -1 : 1,
+                asc: s.charAt(0) !== "-" ? 1 : -1,
                 name: (s.charAt(0) === "+" || s.charAt(0) === "-" ? s.slice(1) : s) as keyof E,
             }));
 
@@ -132,9 +139,7 @@ export class IDBMemoryHybridRepository<E extends Entity, FES extends FilterExpre
 
         if (!count) return entities; // Return only array if count is not needed.
 
-        const result: E[] & { total: number } = entities as E[] & { total: number };
-        result.total = totalCount;
-        return result;
+        return arrayWithTotal(entities, totalCount);
     }
 
     async update(entity: Partial<E> & { id: string }) {
