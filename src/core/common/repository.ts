@@ -1,4 +1,5 @@
 import { Entity } from "@core/common/entity";
+import { F } from "@core/common/F";
 
 export type FilterOperators = "=" | "!=" | ">" | ">=" | "<" | "<=";
 
@@ -16,12 +17,14 @@ export type FE<NAME extends string = string, OPERATOR extends FilterOperators = 
 
 export type SortExpression<NAME extends string> = `${NAME}` | `+${NAME}` | `-${NAME}`;
 
+export type EntityBasicFilterExpression = FE<"id", FilterOperators, string>;
+
 export interface Repository<E extends Entity, FES extends FilterExpression<Extract<keyof E, string>>, SS extends Extract<keyof E, string>> {
     entityType: string;
 
     save(params?: { saveAs?: string }): Promise<void>;
 
-    create(entity: E): Promise<void>;
+    create(entity: E): Promise<E>;
 
     read(id: string): Promise<E>;
 
@@ -39,7 +42,7 @@ export interface Repository<E extends Entity, FES extends FilterExpression<Extra
      * @param params.count - Whether to get total number of entities that match filter conditions.
      */
     query<C extends boolean = true>(params?: {
-        filter?: FES[];
+        filter?: (FES | EntityBasicFilterExpression)[];
         sort?: SortExpression<SS>[];
         limit?: number | null;
         offset?: number;
@@ -47,14 +50,14 @@ export interface Repository<E extends Entity, FES extends FilterExpression<Extra
     }): Promise<C extends false ? E[] : E[] & { total: number }>;
 
     query(params?: {
-        filter?: FES[];
+        filter?: (FES | EntityBasicFilterExpression)[];
         sort?: SortExpression<SS>[];
         limit?: number | null;
         offset?: number;
         count?: boolean;
     }): Promise<E[] & { total?: number }>;
 
-    update(entity: Partial<E> & { id: string }): Promise<void>;
+    update(entity: { [K in keyof E]?: E[K] | F<E[K]> } & { id: string }): Promise<E>;
 
     delete(id: string): Promise<void>;
 }

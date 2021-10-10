@@ -1,8 +1,10 @@
 import { ConflictException, EntityNotFoundException, UnexpectedError } from "@core/common/exceptions";
 import { Entity } from "@core/common/entity";
-import { FilterExpression, Repository, SortExpression } from "@core/common/repository";
+import { EntityBasicFilterExpression, FilterExpression, Repository, SortExpression } from "@core/common/repository";
 import cloneDeep from "lodash/cloneDeep";
 import { arrayWithTotal } from "@core/utils/arrayWithTotal";
+import { F } from "@core/common/F";
+import BigNumber from "bignumber.js";
 
 const DEFAULT_QUERY_LIMIT = 20;
 
@@ -33,12 +35,13 @@ export class IDBMemoryHybridRepository<
     async create(entity: E) {
         if (this.store[entity.id]) throw new ConflictException({ reason: "Entity with same id already exists." });
         this.store[entity.id] = cloneDeep(entity);
+        return cloneDeep(entity);
     }
 
     async read(id: string) {
         const found = this.store[id];
         if (found === undefined) throw new EntityNotFoundException({ entityType: this.entityType, entityId: id });
-        return found;
+        return cloneDeep(found);
     }
 
     /**
@@ -55,7 +58,7 @@ export class IDBMemoryHybridRepository<
      * @param params.count - Whether to get total number of entities that match filter conditions.
      */
     async query<C extends boolean = true>(params?: {
-        filter?: FES[];
+        filter?: (FES | EntityBasicFilterExpression)[];
         sort?: SortExpression<SS>[];
         limit?: number | null;
         offset?: number;
@@ -68,7 +71,7 @@ export class IDBMemoryHybridRepository<
         offset = 0,
         count = true,
     }: {
-        filter?: FES[];
+        filter?: (FES | EntityBasicFilterExpression)[];
         sort?: SortExpression<SS>[];
         limit?: number | null;
         offset?: number;
@@ -138,15 +141,39 @@ export class IDBMemoryHybridRepository<
             entities = entities.slice(offset);
         }
 
-        if (!count) return entities; // Return only array if count is not needed.
+        if (!count) return entities.map((e) => cloneDeep(e)); // Return only array if count is not needed.
 
-        return arrayWithTotal(entities, totalCount);
+        return arrayWithTotal(
+            entities.map((e) => cloneDeep(e)),
+            totalCount
+        );
     }
 
-    async update(entity: Partial<E> & { id: string }) {
+    async update(entity: { [K in keyof E]?: E[K] | F<E[K]> } & { id: string }) {
         const found = this.store[entity.id];
         if (!found) throw new EntityNotFoundException({ entityType: this.entityType, entityId: entity.id });
-        this.store[entity.id] = { ...found, ...entity };
+
+        const updated = {
+            ...found,
+            ...Object.fromEntries(
+                Object.entries(entity).map(([k, v]) => {
+                    if (v instanceof F) {
+                        // @ts-ignore
+                        const orig = found[k];
+                        if (orig instanceof BigNumber) {
+                            // @ts-ignore
+                            return [k, orig.plus(v.add)];
+                            // TODO: bignumber F expression only works if original value and adding value is BigNumber
+                        }
+                        return [k, orig + v.add];
+                        // TODO: only supports F.add expression.
+                    }
+                    return [k, v];
+                })
+            ),
+        };
+        this.store[entity.id] = updated;
+        return cloneDeep(updated);
     }
 
     async delete(id: string) {

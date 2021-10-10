@@ -5,6 +5,8 @@ import { beforeAll, describe, expect, it } from "@jest/globals";
 import { ConflictException, EntityNotFoundException } from "@core/common/exceptions";
 import BigNumber from "bignumber.js";
 import { arrayWithTotal } from "@core/utils/arrayWithTotal";
+import { F } from "@core/common/F";
+import exp from "constants";
 
 class TestEntity extends Entity {
     entityType: "TestEntity" = "TestEntity";
@@ -26,7 +28,6 @@ class TestEntity extends Entity {
 }
 
 type TestEntityFilterExpression =
-    | FE<"id", "=", string>
     | FE<"numberField", FilterOperators, number>
     | FE<"nullableStringField", "=" | "!=", string | null>
     | FE<"bigNumberField", FilterOperators, BigNumber | null>;
@@ -120,6 +121,59 @@ describe("IDBMemoryHybridRepository", () => {
                     entityId: "new_id",
                 })
             );
+        });
+
+        it("supports F expression", async () => {
+            const repository = createTestRepository();
+            const test_1_numberField_val = 10;
+            const test_1 = new TestEntity({ id: "test_1", numberField: test_1_numberField_val });
+            await repository.create(test_1);
+
+            await expect(repository.update({ id: test_1.id, numberField: new F({ add: 10 }) })).resolves.toHaveProperty("numberField", 20);
+        });
+
+        it("supports F expression on BigNumber field", async () => {
+            const repository = createTestRepository();
+            const test_1_bigNumberField_val = new BigNumber(10);
+            const test_1 = new TestEntity({ id: "test_1", bigNumberField: test_1_bigNumberField_val });
+            await repository.create(test_1);
+
+            await expect(
+                repository.update({
+                    id: test_1.id,
+                    bigNumberField: new F({ add: new BigNumber(10) }),
+                })
+            ).resolves.toHaveProperty("bigNumberField", new BigNumber(20));
+        });
+
+        it("has race condition if F expression is not used", async () => {
+            const repository = createTestRepository();
+            const test_1_bigNumberField_val = new BigNumber(10);
+            const test_1 = new TestEntity({ id: "test_1", bigNumberField: test_1_bigNumberField_val });
+            await repository.create(test_1);
+
+            const asyncAddToBigNumberField = async (i: number) => {
+                const e = await repository.read(test_1.id);
+                e.bigNumberField = e.bigNumberField?.plus(new BigNumber(i)) ?? null;
+                await repository.update(e);
+            };
+            await Promise.all(new Array(10000).fill(1).map((i) => asyncAddToBigNumberField(i)));
+
+            await expect(repository.read(test_1.id)).resolves.not.toHaveProperty("bigNumberField", new BigNumber(10010));
+        });
+
+        it("can avoid race condition with F expression", async () => {
+            const repository = createTestRepository();
+            const test_1_bigNumberField_val = new BigNumber(10);
+            const test_1 = new TestEntity({ id: "test_1", bigNumberField: test_1_bigNumberField_val });
+            await repository.create(test_1);
+
+            const asyncAddToBigNumberField = async (i: number) => {
+                await repository.update({ id: test_1.id, bigNumberField: new F({ add: new BigNumber(i) }) });
+            };
+            await Promise.all(new Array(10000).fill(1).map((i) => asyncAddToBigNumberField(i)));
+
+            await expect(repository.read(test_1.id)).resolves.toHaveProperty("bigNumberField", new BigNumber(10010));
         });
     });
 
@@ -217,9 +271,9 @@ describe("IDBMemoryHybridRepository", () => {
             await expect(repository.query({ limit: 4, offset: 2 })).resolves.toEqual(arrayWithTotal(entities.slice(2, 6), 12));
 
             await expect(repository.query({ limit: 4, offset: 2 })).resolves.toHaveProperty("total", 12);
-            
+
             await expect(repository.query({ limit: 0, offset: 2 })).resolves.toEqual(arrayWithTotal([], 12));
-            
+
             await expect(repository.query({ limit: null, offset: 2 })).resolves.toEqual(arrayWithTotal(entities.slice(2), 12));
         });
 
@@ -228,5 +282,13 @@ describe("IDBMemoryHybridRepository", () => {
             await expect(repository.query({ count: false })).resolves.not.toHaveProperty("total");
             await expect(repository.query()).resolves.toHaveProperty("total", 12);
         });
+        
+        it("returns deepCloned entity", async()=>{
+            const entity1 = (await repository.query({limit:1}))[0];
+            const entity2 = (await repository.query({limit:1}))[0];
+            
+            expect(entity1).toEqual(entity2);
+            expect(entity1).not.toBe(entity2);
+        })
     });
 });
