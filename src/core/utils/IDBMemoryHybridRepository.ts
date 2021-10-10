@@ -1,6 +1,6 @@
 import { ConflictException, EntityNotFoundException, UnexpectedError } from "@core/common/exceptions";
 import { Entity } from "@core/common/entity";
-import { FilterExpression, SortExpression } from "@core/common/repository";
+import { FilterExpression, Repository, SortExpression } from "@core/common/repository";
 import cloneDeep from "lodash/cloneDeep";
 import { arrayWithTotal } from "@core/utils/arrayWithTotal";
 
@@ -10,7 +10,8 @@ export class IDBMemoryHybridRepository<
     E extends Entity,
     FES extends FilterExpression<Extract<keyof E, string>>,
     SS extends Extract<keyof E, string>
-> {
+> implements Repository<E, FES, SS>
+{
     gameId: string;
     entityType: string = "NOT SPECIFIED IN REPOSITORY";
     store: Record<string, E>;
