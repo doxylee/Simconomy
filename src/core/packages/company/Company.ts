@@ -1,5 +1,5 @@
-import {Entity} from "@core/common/entity";
-import BigNumber from "bignumber.js";
+import { Entity } from "@core/common/entity";
+import BigNumber from "@core/common/BigNumber";
 
 export class Company extends Entity {
     entityType: "Company" = "Company";

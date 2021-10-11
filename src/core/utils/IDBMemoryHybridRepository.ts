@@ -4,7 +4,7 @@ import { EntityBasicFilterExpression, FilterExpression, Repository, SortExpressi
 import cloneDeep from "lodash/cloneDeep";
 import { arrayWithTotal } from "@core/utils/arrayWithTotal";
 import { F } from "@core/common/F";
-import BigNumber from "bignumber.js";
+import BigNumber from "@core/common/BigNumber";
 
 const DEFAULT_QUERY_LIMIT = 20;
 
@@ -84,6 +84,7 @@ export class IDBMemoryHybridRepository<
             const filterFunc = (e: E) =>
                 filter?.every(([name, op, val]) => {
                     // TODO: change switch to Record<operator, callback>
+                    // TODO: use BigNumber.comparedTo method for 4 times faster execution
                     switch (op) {
                         case "=":
                             return e[name] === val;
@@ -123,6 +124,7 @@ export class IDBMemoryHybridRepository<
 
             const sortFunc = (e1: E, e2: E) => {
                 for (const { asc, name } of parsedSort) {
+                    // TODO: use BigNumber.comparedTo method for 4 times faster execution
                     if (e1[name] > e2[name]) return asc;
                     if (e1[name] < e2[name]) return -asc;
                 }

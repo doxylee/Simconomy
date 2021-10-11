@@ -1,8 +1,9 @@
 import { CompanyRepository } from "@core/packages/company/CompanyRepository";
-import BigNumber from "bignumber.js";
 import { Company } from "@core/packages/company/Company";
 import { InvalidOperationException } from "@core/common/exceptions";
 import { F } from "@core/common/F";
+import BigNumber from "@core/common/BigNumber"
+
 
 export class CompanyService {
     repository: CompanyRepository;

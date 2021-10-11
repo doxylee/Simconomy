@@ -3,10 +3,9 @@ import { IDBMemoryHybridRepository } from "@core/utils/IDBMemoryHybridRepository
 import { FE, FilterOperators } from "@core/common/repository";
 import { beforeAll, describe, expect, it } from "@jest/globals";
 import { ConflictException, EntityNotFoundException } from "@core/common/exceptions";
-import BigNumber from "bignumber.js";
+import BigNumber from "@core/common/BigNumber";
 import { arrayWithTotal } from "@core/utils/arrayWithTotal";
 import { F } from "@core/common/F";
-import exp from "constants";
 
 class TestEntity extends Entity {
     entityType: "TestEntity" = "TestEntity";
@@ -282,13 +281,13 @@ describe("IDBMemoryHybridRepository", () => {
             await expect(repository.query({ count: false })).resolves.not.toHaveProperty("total");
             await expect(repository.query()).resolves.toHaveProperty("total", 12);
         });
-        
-        it("returns deepCloned entity", async()=>{
-            const entity1 = (await repository.query({limit:1}))[0];
-            const entity2 = (await repository.query({limit:1}))[0];
-            
+
+        it("returns deepCloned entity", async () => {
+            const entity1 = (await repository.query({ limit: 1 }))[0];
+            const entity2 = (await repository.query({ limit: 1 }))[0];
+
             expect(entity1).toEqual(entity2);
             expect(entity1).not.toBe(entity2);
-        })
+        });
     });
 });
