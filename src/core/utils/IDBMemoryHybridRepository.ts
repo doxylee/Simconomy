@@ -1,6 +1,12 @@
 import { ConflictException, EntityNotFoundException, UnexpectedError } from "@core/common/exceptions";
 import { Entity } from "@core/common/entity";
-import { EntityBasicFilterExpression, FilterExpression, Repository, SortExpression } from "@core/common/repository";
+import {
+    EntityBasicFilterExpression,
+    EntityBasicSortableFields,
+    FilterExpression,
+    Repository,
+    SortExpression,
+} from "@core/common/repository";
 import cloneDeep from "lodash/cloneDeep";
 import { arrayWithTotal } from "@core/utils/arrayWithTotal";
 import { F } from "@core/common/F";
@@ -59,7 +65,7 @@ export class IDBMemoryHybridRepository<
      */
     async query<C extends boolean = true>(params?: {
         filter?: (FES | EntityBasicFilterExpression)[];
-        sort?: SortExpression<SS>[];
+        sort?: SortExpression<SS | EntityBasicSortableFields>[];
         limit?: number | null;
         offset?: number;
         count?: C;
@@ -72,7 +78,7 @@ export class IDBMemoryHybridRepository<
         count = true,
     }: {
         filter?: (FES | EntityBasicFilterExpression)[];
-        sort?: SortExpression<SS>[];
+        sort?: SortExpression<SS | EntityBasicSortableFields>[];
         limit?: number | null;
         offset?: number;
         count?: boolean;

@@ -19,6 +19,8 @@ export type SortExpression<NAME extends string> = `${NAME}` | `+${NAME}` | `-${N
 
 export type EntityBasicFilterExpression = FE<"id", FilterOperators, string>;
 
+export type EntityBasicSortableFields = "id";
+
 export interface Repository<E extends Entity, FES extends FilterExpression<Extract<keyof E, string>>, SS extends Extract<keyof E, string>> {
     entityType: string;
 
@@ -43,7 +45,7 @@ export interface Repository<E extends Entity, FES extends FilterExpression<Extra
      */
     query<C extends boolean = true>(params?: {
         filter?: (FES | EntityBasicFilterExpression)[];
-        sort?: SortExpression<SS>[];
+        sort?: SortExpression<SS | EntityBasicSortableFields>[];
         limit?: number | null;
         offset?: number;
         count?: C;
@@ -51,7 +53,7 @@ export interface Repository<E extends Entity, FES extends FilterExpression<Extra
 
     query(params?: {
         filter?: (FES | EntityBasicFilterExpression)[];
-        sort?: SortExpression<SS>[];
+        sort?: SortExpression<SS | EntityBasicSortableFields>[];
         limit?: number | null;
         offset?: number;
         count?: boolean;
