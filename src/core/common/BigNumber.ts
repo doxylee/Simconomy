@@ -3,3 +3,7 @@
 import BigNumber from "bignumber.js";
 
 export default BigNumber;
+
+export function BN(n: number | string | BigNumber.Instance) {
+    return new BigNumber(n);
+}

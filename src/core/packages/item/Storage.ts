@@ -1,4 +1,4 @@
-import BigNumber from "@core/common/BigNumber";
+import BigNumber, { BN } from "@core/common/BigNumber";
 import { ItemGroup } from "@core/packages/item/ItemGroup";
 import { DataObject } from "@core/common/dataobject";
 import { InvalidOperationException } from "@core/common/exceptions";
@@ -20,11 +20,11 @@ export class Storage extends DataObject {
         super();
         this.maxVolume = maxVolume;
         this.items = items;
-        this.volume = this.items.reduce((acc, itemGroup) => acc.plus(itemGroup.volume), new BigNumber(0));
+        this.volume = this.items.reduce((acc, itemGroup) => acc.plus(itemGroup.volume), BN(0));
 
         if (this.volume > this.maxVolume) throw new InvalidOperationException({ reason: "Max storage volume exceeded" });
     }
-    
+
     /**
      * Add itemgroup to storage
      *
@@ -34,7 +34,7 @@ export class Storage extends DataObject {
     addItemGroup(itemGroup: ItemGroup) {
         if (this.volume.plus(itemGroup.volume) > this.maxVolume)
             throw new InvalidOperationException({ reason: "Max storage volume exceeded" });
-        const compatibleItemGroup = this.items.find(i=>i.isCompatible(itemGroup));
-        if(compatibleItemGroup) compatibleItemGroup.add(itemGroup);
+        const compatibleItemGroup = this.items.find((i) => i.isCompatible(itemGroup));
+        if (compatibleItemGroup) compatibleItemGroup.add(itemGroup);
     }
 }

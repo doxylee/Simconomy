@@ -2,6 +2,8 @@ import { ItemDefinition } from "@core/packages/item/ItemDefinition";
 import { EntityNotFoundException } from "@core/common/exceptions";
 
 const ITEM_DEFINITIONS: Record<string, ItemDefinition> = {
+    coal: new ItemDefinition({ id: "coal" }),
+    ironOre: new ItemDefinition({ id: "ironOre" }),
     steel: new ItemDefinition({ id: "steel" }),
 };
 

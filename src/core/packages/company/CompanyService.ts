@@ -2,8 +2,7 @@ import { CompanyRepository } from "@core/packages/company/CompanyRepository";
 import { Company } from "@core/packages/company/Company";
 import { InvalidOperationException } from "@core/common/exceptions";
 import { F } from "@core/common/F";
-import BigNumber from "@core/common/BigNumber"
-
+import BigNumber, { BN } from "@core/common/BigNumber";
 
 export class CompanyService {
     repository: CompanyRepository;
@@ -19,7 +18,7 @@ export class CompanyService {
      * @param name - Name of the company
      * @param cash - Initial cash
      */
-    async createCompany({ name, cash = new BigNumber(0) }: { name: string; cash: BigNumber }) {
+    async createCompany({ name, cash = BN(0) }: { name: string; cash: BigNumber }) {
         const newCompany = new Company({ name, cash });
         return this.repository.create(newCompany);
     }
