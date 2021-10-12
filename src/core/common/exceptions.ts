@@ -1,13 +1,9 @@
 class StructuredException extends Error {
-    type: string = "StringifiableException";
-
-    get message() {
-        return this.type;
-    }
+    name: string = "StructuredException";
 }
 
 export class EntityNotFoundException extends StructuredException {
-    type: "EntityNotFoundException" = "EntityNotFoundException";
+    name: "EntityNotFoundException" = "EntityNotFoundException";
     entityType: string;
     entityId: string;
 
@@ -15,38 +11,29 @@ export class EntityNotFoundException extends StructuredException {
         super();
         this.entityType = entityType;
         this.entityId = entityId;
-    }
-
-    get message() {
-        return `Entity with id "${this.entityId}" of type ${this.entityType} is not found`;
+        this.message = `Entity with id "${this.entityId}" of type ${this.entityType} is not found`;
     }
 }
 
 export class InvalidOperationException extends StructuredException {
-    type: "InvalidOperationException" = "InvalidOperationException";
+    name: "InvalidOperationException" = "InvalidOperationException";
     reason: string;
 
     constructor({ reason }: { reason: string }) {
         super();
         this.reason = reason;
-    }
-
-    get message() {
-        return `Invalid operation occurred. Reason: ${this.reason}`;
+        this.message = `Invalid operation occurred. Reason: ${this.reason}`;
     }
 }
 
 export class ConflictException extends StructuredException {
-    type: "ConflictException" = "ConflictException";
+    name: "ConflictException" = "ConflictException";
     reason: string;
 
     constructor({ reason }: { reason: string }) {
         super();
         this.reason = reason;
-    }
-    
-    get message() {
-        return `Conflict occurred. Reason: ${this.reason}`;
+        this.message = `Conflict occurred. Reason: ${this.reason}`;
     }
 }
 
@@ -54,16 +41,13 @@ export class ConflictException extends StructuredException {
  * Thrown if case that should never happen occurred
  */
 export class UnexpectedError extends StructuredException {
-    type: "UnexpectedError" = "UnexpectedError";
+    name: "UnexpectedError" = "UnexpectedError";
     reason: string;
 
     constructor({ reason }: { reason: string }) {
         super();
         this.reason = reason;
-    }
-    
-    get message() {
-        return `Error that should never happen occurred! Reason: ${this.reason}`;
+        this.message = `Error that should never happen occurred! Reason: ${this.reason}`;
     }
 }
 
