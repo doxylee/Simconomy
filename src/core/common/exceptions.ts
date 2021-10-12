@@ -50,6 +50,9 @@ export class ConflictException extends StructuredException {
     }
 }
 
+/**
+ * Thrown if case that should never happen occurred
+ */
 export class UnexpectedError extends StructuredException {
     type: "UnexpectedError" = "UnexpectedError";
     reason: string;
