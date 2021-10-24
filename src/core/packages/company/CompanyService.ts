@@ -28,7 +28,7 @@ export class CompanyService {
      * @param id
      * @throws EntityNotFoundException
      */
-    async getCompany({ id }: { id: string }) {
+    async getCompany(id: string) {
         return this.repository.read(id);
     }
 
