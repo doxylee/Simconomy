@@ -7,7 +7,6 @@ import {
     Repository,
     SortExpression,
 } from "@core/common/repository";
-import cloneDeep from "lodash/cloneDeep";
 import { arrayWithTotal } from "@core/utils/arrayWithTotal";
 import { F } from "@core/common/F";
 import BigNumber from "@core/common/BigNumber";
@@ -40,14 +39,14 @@ export class IDBMemoryHybridRepository<
 
     async create(entity: E) {
         if (this.store[entity.id]) throw new ConflictException({ reason: "Entity with same id already exists." });
-        this.store[entity.id] = cloneDeep(entity);
-        return cloneDeep(entity);
+        this.store[entity.id] = entity.clone();
+        return entity.clone();
     }
 
     async read(id: string) {
         const found = this.store[id];
         if (found === undefined) throw new EntityNotFoundException({ entityType: this.entityType, entityId: id });
-        return cloneDeep(found);
+        return found.clone();
     }
 
     /**
@@ -149,10 +148,10 @@ export class IDBMemoryHybridRepository<
             entities = entities.slice(offset);
         }
 
-        if (!count) return entities.map((e) => cloneDeep(e)); // Return only array if count is not needed.
+        if (!count) return entities.map((e) => e.clone()); // Return only array if count is not needed.
 
         return arrayWithTotal(
-            entities.map((e) => cloneDeep(e)),
+            entities.map((e) => e.clone()),
             totalCount
         );
     }
@@ -181,7 +180,7 @@ export class IDBMemoryHybridRepository<
             ),
         };
         this.store[entity.id] = updated;
-        return cloneDeep(updated);
+        return updated.clone();
     }
 
     async delete(id: string) {

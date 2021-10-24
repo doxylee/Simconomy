@@ -1,15 +1,12 @@
 import { uuid4 } from "@core/common/uuid";
+import cloneDeep from "lodash/cloneDeep";
 
 export type EntityConstructionParam = Partial<Pick<Entity, "id">>;
 
 export class Entity {
     entityType: string = "Entity";
     id: string;
-    
-    
-    // destructuring, and manually setting default values in the constructor
-    // Default value assignment is done after calling super. so inputted value becomes overwritten with default values.
-    
+
     /**
      * WARNING:
      * In the subclass, default value assignment is done after calling super().
@@ -20,5 +17,12 @@ export class Entity {
     constructor(data?: EntityConstructionParam) {
         this.id = uuid4();
         Object.assign(this, data);
+    }
+
+    /**
+     *
+     */
+    clone(): this {
+        return cloneDeep(this);
     }
 }

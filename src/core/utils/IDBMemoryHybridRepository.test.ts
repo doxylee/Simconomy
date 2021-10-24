@@ -13,6 +13,9 @@ class TestEntity extends Entity {
     nullableStringField: string | null;
     bigNumberField: BigNumber | null;
 
+    // destructuring, and manually setting default values in the constructor
+    // Default value assignment is done after calling super. so inputted value becomes overwritten with default values.
+
     constructor({
         numberField = 0,
         nullableStringField = null,
