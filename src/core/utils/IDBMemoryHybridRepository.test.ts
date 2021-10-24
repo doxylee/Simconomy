@@ -280,8 +280,8 @@ describe("IDBMemoryHybridRepository", () => {
         });
 
         it("returns total count depending on option", async () => {
-            await expect(repository.query({ count: true })).resolves.toHaveProperty("total", 12);
-            await expect(repository.query({ count: false })).resolves.not.toHaveProperty("total");
+            await expect(repository.query({ showTotal: true })).resolves.toHaveProperty("total", 12);
+            await expect(repository.query({ showTotal: false })).resolves.not.toHaveProperty("total");
             await expect(repository.query()).resolves.toHaveProperty("total", 12);
         });
 

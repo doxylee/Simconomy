@@ -60,100 +60,97 @@ export class IDBMemoryHybridRepository<
      * @param params.sort - Which fields to sort result with.
      * @param params.limit - Max number of entities to get. Set to null to set no limit. Defaults to 20(DEFAULT_QUERY_LIMIT) if not specified.
      * @param params.offset - Offset of entities to get
-     * @param params.count - Whether to get total number of entities that match filter conditions.
+     * @param params.showTotal - Whether to get total number of entities that match filter conditions.
      */
     async query<C extends boolean = true>(params?: {
         filter?: (FES | EntityBasicFilterExpression)[];
         sort?: SortExpression<SS | EntityBasicSortableFields>[];
         limit?: number | null;
         offset?: number;
-        count?: C;
+        showTotal?: C;
     }): Promise<C extends false ? E[] : E[] & { total: number }>;
     async query({
         filter,
         sort,
         limit = DEFAULT_QUERY_LIMIT,
         offset = 0,
-        count = true,
+        showTotal = true,
     }: {
         filter?: (FES | EntityBasicFilterExpression)[];
         sort?: SortExpression<SS | EntityBasicSortableFields>[];
         limit?: number | null;
         offset?: number;
-        count?: boolean;
+        showTotal?: boolean;
     } = {}): Promise<E[] & { total?: number }> {
         let entities = Object.values(this.store);
 
-        // Filter if requested
-        if (filter) {
-            const filterFunc = (e: E) =>
-                filter?.every(([name, op, val]) => {
-                    // TODO: change switch to Record<operator, callback>
-                    // TODO: use BigNumber.comparedTo method for 4 times faster execution
-                    switch (op) {
-                        case "=":
-                            return e[name] === val;
-                        case "!=":
-                            return e[name] !== val;
-                        case ">":
-                            return e[name] > val;
-                        case ">=":
-                            return e[name] >= val;
-                        case "<":
-                            return e[name] < val;
-                        case "<=":
-                            return e[name] <= val;
-                        default:
-                            throw new UnexpectedError({ reason: `Unknown filter operation '${op}' requested.` });
-                    }
-                });
-            entities = entities.filter(filterFunc);
-        }
+        // filter
+        if (filter) entities = this.applyFilter(entities, filter);
         const totalCount = entities.length;
 
         // When only total count is needed, return right after filter
-        if (limit === 0) {
-            // If total count is also not needed (calling query was pointless), return empty array.
-            // TODO: show warning log
-            if (!count) return [];
+        if (limit === 0) return showTotal ? arrayWithTotal([], totalCount) : [];
 
-            return arrayWithTotal([], totalCount);
-        }
+        // sort
+        if (sort) this.applySort(entities, sort);
 
-        // Sort if needed
-        if (sort) {
-            const parsedSort = sort.map((s): { asc: 1 | -1; name: keyof E } => ({
-                asc: s.charAt(0) !== "-" ? 1 : -1,
-                name: (s.charAt(0) === "+" || s.charAt(0) === "-" ? s.slice(1) : s) as keyof E,
-            }));
+        // limit, offset
+        entities = this.applyLimitOffset(entities, limit, offset);
 
-            const sortFunc = (e1: E, e2: E) => {
-                for (const { asc, name } of parsedSort) {
-                    // TODO: use BigNumber.comparedTo method for 4 times faster execution
-                    if (e1[name] > e2[name]) return asc;
-                    if (e1[name] < e2[name]) return -asc;
+        // Return result
+        const result = entities.map((e) => e.clone());
+        return showTotal ? arrayWithTotal(result, totalCount) : result;
+    }
+
+    private applyFilter(entities: E[], filter: (FES | EntityBasicFilterExpression)[]) {
+        const filterFunc = (e: E) =>
+            filter?.every(([name, op, val]) => {
+                // TODO: change switch to Record<operator, callback>
+                // TODO: use BigNumber.comparedTo method for 4 times faster execution
+                switch (op) {
+                    case "=":
+                        return e[name] === val;
+                    case "!=":
+                        return e[name] !== val;
+                    case ">":
+                        return e[name] > val;
+                    case ">=":
+                        return e[name] >= val;
+                    case "<":
+                        return e[name] < val;
+                    case "<=":
+                        return e[name] <= val;
+                    default:
+                        throw new UnexpectedError({ reason: `Unknown filter operation '${op}' requested.` });
                 }
-                return 0;
-            };
-            entities.sort(sortFunc);
-        }
+            });
+        return entities.filter(filterFunc);
+    }
 
-        // If limit is needed
-        if (limit !== null) {
-            entities = entities.slice(offset, offset + limit);
-        }
+    private applySort(entities: E[], sort: SortExpression<SS | EntityBasicSortableFields>[]) {
+        const parsedSort = sort.map((s): { asc: 1 | -1; name: keyof E } => ({
+            asc: s.charAt(0) !== "-" ? 1 : -1,
+            name: (s.charAt(0) === "+" || s.charAt(0) === "-" ? s.slice(1) : s) as keyof E,
+        }));
 
+        const sortFunc = (e1: E, e2: E) => {
+            for (const { asc, name } of parsedSort) {
+                // TODO: use BigNumber.comparedTo method for 4 times faster execution
+                if (e1[name] > e2[name]) return asc;
+                if (e1[name] < e2[name]) return -asc;
+            }
+            return 0;
+        };
+        entities.sort(sortFunc);
+    }
+
+    private applyLimitOffset(entities: E[], limit: number | null, offset: number) {
+        // If limit must be applied
+        if (limit !== null) return entities.slice(offset, offset + limit);
         // If no limit but offset exists, apply offset
-        else if (offset) {
-            entities = entities.slice(offset);
-        }
+        else if (offset) return entities.slice(offset);
 
-        if (!count) return entities.map((e) => e.clone()); // Return only array if count is not needed.
-
-        return arrayWithTotal(
-            entities.map((e) => e.clone()),
-            totalCount
-        );
+        return entities; // Do nothing if no limit and no offset
     }
 
     async update(entity: { [K in keyof E]?: E[K] | F<E[K]> } & { id: string }) {
