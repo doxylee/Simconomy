@@ -9,6 +9,7 @@ import { InvalidOperationException } from "@core/common/exceptions";
  * Contains data about item type, amount, quality, brand, etc
  */
 export class ItemGroup extends DataObject {
+    /** Unique id of this item group. Used for selecting which item group to buy/sell/use */
     groupId: string;
     def: ItemDefinition; // TODO: ItemDefinition don't have to be cloned. Optimization opportunity.
     amount: BigNumber;

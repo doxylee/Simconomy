@@ -3,7 +3,7 @@ import { ItemGroup } from "@core/packages/item/ItemGroup";
 import { DataObject } from "@core/common/dataobject";
 import { InvalidOperationException } from "@core/common/exceptions";
 
-export class Storage extends DataObject {
+export class ItemStorage extends DataObject {
     maxVolume: BigNumber;
     items: ItemGroup[]; // TODO: ItemGroup.def don't have to be cloned. Optimization opportunity.
 
