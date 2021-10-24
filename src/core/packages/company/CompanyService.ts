@@ -59,6 +59,7 @@ export class CompanyService {
      * @throws EntityNotFoundException
      */
     async useCashFixed({ id, amount }: { id: string; amount: BigNumber }) {
+        // TODO: Very high amount of negative cash in 1 tick can be abused for other company's revenue.
         return this.repository.update({ id, cash: new F({ add: amount.negated() }) });
     }
 
