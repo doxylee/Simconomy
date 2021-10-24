@@ -52,3 +52,7 @@ export class UnexpectedError extends StructuredException {
 }
 
 export type ServiceException = EntityNotFoundException | InvalidOperationException | ConflictException;
+
+export function isServiceException(e: any): e is ServiceException {
+    return ["EntityNotFoundException", "InvalidOperationException", "ConflictException"].includes(e.name);
+}
