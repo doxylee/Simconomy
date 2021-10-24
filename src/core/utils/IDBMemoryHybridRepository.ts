@@ -157,30 +157,26 @@ export class IDBMemoryHybridRepository<
     }
 
     async update(entity: { [K in keyof E]?: E[K] | F<E[K]> } & { id: string }) {
-        const found = this.store[entity.id];
-        if (!found) throw new EntityNotFoundException({ entityType: this.entityType, entityId: entity.id });
+        const original = this.store[entity.id];
+        if (!original) throw new EntityNotFoundException({ entityType: this.entityType, entityId: entity.id });
 
-        const updated = {
-            ...found,
-            ...Object.fromEntries(
-                Object.entries(entity).map(([k, v]) => {
-                    if (v instanceof F) {
-                        // @ts-ignore
-                        const orig = found[k];
-                        if (orig instanceof BigNumber) {
-                            // @ts-ignore
-                            return [k, orig.plus(v.add)];
-                            // TODO: bignumber F expression only works if original value and adding value is BigNumber
-                        }
-                        return [k, orig + v.add];
-                        // TODO: only supports F.add expression.
+        const updatePayload = Object.fromEntries(
+            Object.entries(entity).map(([k, v]) => {
+                if (v instanceof F) {
+                    const orig: any = original[k as keyof E];
+                    if (orig instanceof BigNumber && v.add instanceof BigNumber) {
+                        return [k, orig.plus(v.add)];
+                        // TODO: bignumber F expression only works if original value and adding value is BigNumber
                     }
-                    return [k, v];
-                })
-            ),
-        };
-        this.store[entity.id] = updated;
-        return updated.clone();
+                    return [k, orig + v.add];
+                    // TODO: only supports F.add expression.
+                }
+                return [k, v];
+            })
+        );
+        Object.assign(original, updatePayload);
+
+        return original.clone();
     }
 
     async delete(id: string) {
