@@ -24,10 +24,23 @@ export type EntityBasicSortableFields = "id";
 export interface Repository<E extends Entity, FES extends FilterExpression<Extract<keyof E, string>>, SS extends Extract<keyof E, string>> {
     entityType: string;
 
-    save(params?: { saveAs?: string }): Promise<void>;
+    // TODO: Should save() be defined in Repository interface?
+    // save(params?: { saveAs?: string }): Promise<void>;
 
+    /**
+     * Add an entity to the repository.
+     *
+     * @param entity
+     * @throws ConflictException
+     */
     create(entity: E): Promise<E>;
 
+    /**
+     * Find an entity by its id.
+     *
+     * @param id
+     * @throws EntityNotFoundException
+     */
     read(id: string): Promise<E>;
 
     /**
@@ -59,7 +72,22 @@ export interface Repository<E extends Entity, FES extends FilterExpression<Extra
         showTotal?: boolean;
     }): Promise<E[] & { total?: number }>;
 
+    /**
+     * Update an entity.
+     * Parameter object must have an `id` parameter which designates which entity to update.
+     * Other properties of the parameter is overwritten to the target entity.
+     * `F` instance can be used as the property value.
+     *
+     * @param entity
+     * @throws EntityNotFoundException
+     */
     update(entity: { [K in keyof E]?: E[K] | F<E[K]> } & { id: string }): Promise<E>;
 
+    /**
+     * Delete and entity by its id.
+     *
+     * @param id
+     * @throws EntityNotFoundException
+     */
     delete(id: string): Promise<void>;
 }

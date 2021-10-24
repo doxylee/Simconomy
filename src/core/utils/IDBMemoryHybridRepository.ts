@@ -36,13 +36,25 @@ export class IDBMemoryHybridRepository<
     async save(params?: { saveAs?: string }) {
         throw "Not implemented";
     }
-
+    
+    /**
+     * Add an entity to the repository.
+     *
+     * @param entity
+     * @throws ConflictException
+     */
     async create(entity: E) {
         if (this.store[entity.id]) throw new ConflictException({ reason: "Entity with same id already exists." });
         this.store[entity.id] = entity.clone();
         return entity.clone();
     }
-
+    
+    /**
+     * Find an entity by its id.
+     *
+     * @param id
+     * @throws EntityNotFoundException
+     */
     async read(id: string) {
         const found = this.store[id];
         if (found === undefined) throw new EntityNotFoundException({ entityType: this.entityType, entityId: id });
@@ -152,7 +164,16 @@ export class IDBMemoryHybridRepository<
 
         return entities; // Do nothing if no limit and no offset
     }
-
+    
+    /**
+     * Update an entity.
+     * Parameter object must have an `id` parameter which designates which entity to update.
+     * Other properties of the parameter is overwritten to the target entity.
+     * `F` instance can be used as the property value.
+     *
+     * @param entity
+     * @throws EntityNotFoundException
+     */
     async update(entity: { [K in keyof E]?: E[K] | F<E[K]> } & { id: string }) {
         const original = this.store[entity.id];
         if (!original) throw new EntityNotFoundException({ entityType: this.entityType, entityId: entity.id });
@@ -175,7 +196,13 @@ export class IDBMemoryHybridRepository<
 
         return original.clone();
     }
-
+    
+    /**
+     * Delete and entity by its id.
+     *
+     * @param id
+     * @throws EntityNotFoundException
+     */
     async delete(id: string) {
         if (!this.store[id]) throw new EntityNotFoundException({ entityType: this.entityType, entityId: id });
         delete this.store[id];
