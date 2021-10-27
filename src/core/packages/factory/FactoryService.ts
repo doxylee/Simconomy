@@ -133,7 +133,7 @@ export class FactoryService {
      * @param amount
      * @param price
      * @throws EntityNotFoundException
-     * @throws InvalidOperationException - Volume of items is bigger than storage
+     * @throws InvalidOperationException - Insufficient amount of items in ItemGroup
      */
     async sellItem({
         factoryId,
