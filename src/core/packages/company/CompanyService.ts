@@ -8,7 +8,7 @@ export class CompanyService {
     repository: CompanyRepository;
     userIdentity = {};
 
-    constructor(repository: CompanyRepository, userIdentity = {}) {
+    constructor({repository, userIdentity}:{repository: CompanyRepository, userIdentity : {}}) {
         this.repository = repository;
         this.userIdentity = userIdentity;
     }

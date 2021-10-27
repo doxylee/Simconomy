@@ -19,7 +19,7 @@ export class FactoryService {
     companyService!: CompanyService;
     itemLibrary!: ItemLibrary;
 
-    constructor(repository: FactoryRepository, userIdentity = {}) {
+    constructor({repository, userIdentity}:{repository: FactoryRepository, userIdentity : {}}) {
         this.repository = repository;
         this.userIdentity = userIdentity;
     }
