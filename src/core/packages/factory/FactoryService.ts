@@ -108,7 +108,7 @@ export class FactoryService {
     }
 
     /**
-     * Factory buys contacted items.
+     * Factory buys contracted items.
      *
      * @param factoryId
      * @param itemGroup
@@ -126,7 +126,7 @@ export class FactoryService {
     }
 
     /**
-     * Factory sells contacted items.
+     * Factory sells contracted items.
      *
      * @param factoryId
      * @param itemGroupId
