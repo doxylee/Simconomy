@@ -1,5 +1,5 @@
 import { DataObject } from "@core/common/dataobject";
-import BigNumber from "bignumber.js";
+import BigNumber from "@core/common/BigNumber";
 
 type ItemBatch = { id: string; amount: BigNumber };
 
