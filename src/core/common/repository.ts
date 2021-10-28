@@ -72,6 +72,8 @@ export interface Repository<E extends Entity, FES extends FilterExpression<Extra
         showTotal?: boolean;
     }): Promise<E[] & { total?: number }>;
 
+    // TODO: Add exists() method for optimization
+
     /**
      * Update an entity.
      * Parameter object must have an `id` parameter which designates which entity to update.
