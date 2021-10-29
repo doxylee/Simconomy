@@ -19,7 +19,7 @@ export class FactoryService {
     companyService!: CompanyService;
     itemLibrary!: ItemLibrary;
 
-    constructor({repository, userIdentity}:{repository: FactoryRepository, userIdentity : {}}) {
+    constructor({ repository, userIdentity }: { repository: FactoryRepository; userIdentity: {} }) {
         this.repository = repository;
         this.userIdentity = userIdentity;
     }
@@ -168,7 +168,7 @@ export class FactoryService {
         const factory = await this.repository.read(factoryId);
         return factory.storage.items;
     }
-    
+
     /**
      * Run 1 manufacture day for all factories.
      * - Use materials to manufacture products.
@@ -178,11 +178,11 @@ export class FactoryService {
         const factories = await this.repository.query({ limit: null, showTotal: false });
         for (const factory of factories) {
             const runningCost = this.manufactureAndReturnCost(factory);
-            await this.repository.update({id:factory.id, storage:factory.storage});
-            await this.companyService.useCashFixed({id:factory.companyId, amount:runningCost})
+            await this.repository.update({ id: factory.id, storage: factory.storage });
+            await this.companyService.useCashFixed({ id: factory.companyId, amount: runningCost });
         }
     }
-    
+
     /**
      * Progress 1 manufacture day for a factory.
      * WARNING: Only alters the given factory instance.
@@ -197,14 +197,14 @@ export class FactoryService {
         if (factory.process === null) return BN(0);
 
         const materials: Record<string, ItemGroup[]> = {};
-        let maxCraftableUnitsByInput = BN(Infinity);
+        let maxCraftableUnitsLimitedByMaterial = BN(Infinity);
         let inputVolumePerManufactureUnit = BN(0);
         factory.process.input.forEach(({ id, amount }) => {
             const itemGroups = factory.storage.getAllItemGroupsOfItemType(id);
             materials[id] = itemGroups;
 
             const materialCount = itemGroups.reduce((acc, cur) => acc.plus(cur.amount), BN(0));
-            maxCraftableUnitsByInput = BigNumber.min(maxCraftableUnitsByInput, materialCount.div(amount));
+            maxCraftableUnitsLimitedByMaterial = BigNumber.min(maxCraftableUnitsLimitedByMaterial, materialCount.div(amount));
 
             if (itemGroups.length > 0)
                 inputVolumePerManufactureUnit = inputVolumePerManufactureUnit.plus(itemGroups[0].def.volume.times(amount));
@@ -218,9 +218,9 @@ export class FactoryService {
         const volumeChangePerManufactureUnit = outputVolumePerManufactureUnit.minus(inputVolumePerManufactureUnit);
 
         const manufactureCount = BigNumber.min(
-            maxCraftableUnitsByInput,
+            maxCraftableUnitsLimitedByMaterial,
             factory.process.throughput.times(factory.size),
-            volumeChangePerManufactureUnit.isPositive()
+            volumeChangePerManufactureUnit.isPositive() // Restrict manufacturing to available space in storage. Allow manufacturing if net volume change is negative
                 ? factory.storage.maxVolume.minus(factory.storage.volume).div(volumeChangePerManufactureUnit)
                 : BN(Infinity)
         );

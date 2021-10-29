@@ -4,7 +4,11 @@ import { DataObject } from "@core/common/dataobject";
 import { EntityNotFoundException, InvalidOperationException } from "@core/common/exceptions";
 
 export class ItemStorage extends DataObject {
-    maxVolume: BigNumber;
+    /**
+     * Maximum volume this storage can store.
+     * More than this volume can be stored, but it causes additional costs.
+     */
+    maxVolume: BigNumber;  // TODO: incur additional cost
 
     /**
      * ItemGroups in this storage.
@@ -36,11 +40,8 @@ export class ItemStorage extends DataObject {
      * Add as new ItemGroup or merge to compatible ItemGroup if exists.
      *
      * @param itemGroup
-     * @throws InvalidOperationException - Volume of items is bigger than maxVolume
      */
     addItemGroup(itemGroup: ItemGroup) {
-        if (this.volume.plus(itemGroup.volume) > this.maxVolume)
-            throw new InvalidOperationException({ reason: "Max storage volume exceeded" });
         const compatibleItemGroup = this.items.find((i) => i.isCompatible(itemGroup));
         if (compatibleItemGroup) compatibleItemGroup.add(itemGroup);
         else this.items.push(itemGroup)
