@@ -54,7 +54,7 @@ export interface Repository<E extends Entity, FES extends FilterExpression<Extra
      * @param params.sort - Which fields to sort result with.
      * @param params.limit - Max number of entities to get. Set to null to set no limit. Defaults to 20(DEFAULT_QUERY_LIMIT) if not specified.
      * @param params.offset - Offset of entities to get
-     * @param params.showTotal - Whether to get total number of entities that match filter conditions.
+     * @param params.showTotal - Whether to get total number of entities that match filter conditions. Defaults to true.
      */
     query<C extends boolean = true>(params?: {
         filter?: (FES | EntityBasicFilterExpression)[];
