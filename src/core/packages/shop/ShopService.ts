@@ -127,6 +127,7 @@ export class ShopService {
      * @throws InvalidOperationException - Volume of items is bigger than storage
      */
     async buyItem({ shopId, itemGroup, price }: { shopId: string; itemGroup: ItemGroup; price: BigNumber }) {
+        // TODO: optionally designate itemGroupId
         const shop = await this.repository.read(shopId);
         shop.storage.addItemGroup(itemGroup);
         await this.repository.update(shop);

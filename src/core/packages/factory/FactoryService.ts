@@ -117,6 +117,7 @@ export class FactoryService {
      * @throws InvalidOperationException - Volume of items is bigger than storage
      */
     async buyItem({ factoryId, itemGroup, price }: { factoryId: string; itemGroup: ItemGroup; price: BigNumber }) {
+        // TODO: optionally designate itemGroupId
         const factory = await this.repository.read(factoryId);
         factory.storage.addItemGroup(itemGroup);
         await this.repository.update(factory);
