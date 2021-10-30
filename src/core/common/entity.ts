@@ -14,9 +14,8 @@ export class Entity {
      * Therefore in the subclass's constructor, object must be destructured to only send properties of the super class when calling super,
      * and manually set the subclass's properties after calling super().
      */
-    constructor(data?: EntityConstructionParam) {
-        this.id = uuid4();
-        Object.assign(this, data);
+    constructor({ id = uuid4() }: EntityConstructionParam = {}) {
+        this.id = id;
     }
 
     /**
