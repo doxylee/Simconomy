@@ -5,7 +5,7 @@ import { EntityNotFoundException, InvalidOperationException } from "@core/common
 
 export class ItemStorage extends DataObject {
     /**
-     * Maximum volume this storage can store.
+     * Maximum volume this storage can store in m³.
      * More than this volume can be stored, but it causes additional costs.
      */
     maxVolume: BigNumber;  // TODO: incur additional cost
@@ -17,7 +17,7 @@ export class ItemStorage extends DataObject {
      */
     items: ItemGroup[]; // TODO: ItemGroup.def don't have to be cloned. Optimization opportunity.
 
-    /** Used volume of storage. */
+    /** Used volume of storage in m³. */
     volume: BigNumber;
 
     /**
