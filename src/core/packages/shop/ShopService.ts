@@ -6,14 +6,16 @@ import { TurnProgressSystem } from "@core/systems/TurnProgressSystem";
 import { ItemStorage } from "@core/packages/item/ItemStorage";
 import { ItemGroup } from "@core/packages/item/ItemGroup";
 import { Shop } from "@core/packages/shop/Shop";
-import {SaleEntry} from "@core/packages/shop/SaleEntry";
+import { SaleEntry } from "@core/packages/shop/SaleEntry";
 
 const SHOP_PRICE_PER_SIZE = 200000;
 const SHOP_PRICE_PER_STORAGE_VOLUME = 20000;
 
-type SellingDataForTurnProgress = {
+export type SellingDataForCustomerMarket = {
     shopId: string;
+    itemId: string;
     itemGroup: ItemGroup;
+    size: BigNumber;
     price: BigNumber;
 };
 
@@ -83,8 +85,7 @@ export class ShopService {
     async getShopsOfCompany({ companyId }: { companyId: string }) {
         return this.repository.query({ filter: [["companyId", "=", companyId]], limit: null, showTotal: false });
     }
-    
-    
+
     /**
      * Change which items the shop sells.
      * WARNING: Signature might change
@@ -93,24 +94,26 @@ export class ShopService {
      * @param selling - Array of SaleEntries to sell from the shop
      * @throws EntityNotFoundException
      */
-    async setSelling({shopId, selling}: {shopId:string, selling: SaleEntry[]}){
-        return this.repository.update({id:shopId, selling});
+    async setSelling({ shopId, selling }: { shopId: string; selling: SaleEntry[] }) {
+        return this.repository.update({ id: shopId, selling });
         // TODO: Don't allow replacing selling entirely
         // TODO: Add validation
     }
 
     /**
-     * Get list of all SaleEntry data augmented with data needed for ConsumerMarket turn progression.
-     * Called from ConsumerMarketService.
+     * Get list of all SaleEntry data augmented with data needed for RetailMarket turn progression.
+     * Called from RetailMarketService.
      *
      * @throws EntityNotFoundException - Can't find ItemGroup designated in SaleEntry.
      */
-    async getAllSellingDataForTurnProgress(): Promise<SellingDataForTurnProgress[]> {
+    async getSellingDataForCustomerMarket(): Promise<SellingDataForCustomerMarket[]> {
         const allShops = await this.repository.query({ limit: null, showTotal: false });
         return allShops.flatMap((shop) =>
             shop.selling.map((selling) => ({
                 shopId: shop.id,
+                itemId: selling.itemId,
                 itemGroup: shop.storage.getItemGroup(selling.itemGroupId),
+                size: shop.size,
                 price: selling.price,
             }))
         );
