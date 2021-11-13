@@ -43,6 +43,8 @@ export class FactoryService {
         this.turnProgressSystem = turnProgressSystem;
         this.companyService = companyService;
         this.itemLibrary = itemLibrary;
+
+        turnProgressSystem.registerCallback("factoryStep", this.progressTurn.bind(this));
     }
 
     /**
@@ -244,5 +246,3 @@ export class FactoryService {
         return factory.process.manufacturingCost.times(manufactureCount);
     }
 }
-
-

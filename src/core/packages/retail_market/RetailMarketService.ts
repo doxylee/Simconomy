@@ -39,6 +39,8 @@ export class RetailMarketService {
         this.turnProgressSystem = turnProgressSystem;
         this.companyService = companyService;
         this.shopService = shopService;
+    
+        turnProgressSystem.registerCallback("retailSaleStep", this.progressTurn.bind(this));
     }
 
     /**
