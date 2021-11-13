@@ -1,5 +1,5 @@
 import { DataObject } from "@core/common/dataobject";
-import BigNumber from "@core/common/BigNumber";
+import { BigNumber } from "@core/common/BigNumber";
 
 export class SaleEntry extends DataObject {
     itemId: string;

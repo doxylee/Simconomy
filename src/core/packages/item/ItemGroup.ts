@@ -1,5 +1,5 @@
 import { ItemDefinition } from "@core/packages/item/ItemDefinition";
-import BigNumber from "@core/common/BigNumber";
+import { BigNumber } from "@core/common/BigNumber";
 import { uuid4 } from "@core/common/uuid";
 import { DataObject } from "@core/common/dataobject";
 import { InvalidOperationException } from "@core/common/exceptions";

@@ -1,5 +1,5 @@
 import { InvalidOperationException } from "@core/common/exceptions";
-import BigNumber from "@core/common/BigNumber";
+import { BigNumber } from "@core/common/BigNumber";
 import { ShopRepository } from "@core/packages/shop/ShopRepository";
 import { CompanyService } from "@core/packages/company/CompanyService";
 import { TurnProgressSystem } from "@core/systems/TurnProgressSystem";

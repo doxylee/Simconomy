@@ -1,4 +1,4 @@
-import BigNumber, { BN } from "@core/common/BigNumber";
+import { BigNumber, BN } from "@core/common/BigNumber";
 import { ItemGroup } from "@core/packages/item/ItemGroup";
 import { DataObject } from "@core/common/dataobject";
 import { EntityNotFoundException, InvalidOperationException } from "@core/common/exceptions";

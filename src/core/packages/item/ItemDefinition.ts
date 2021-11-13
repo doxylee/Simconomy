@@ -1,4 +1,4 @@
-import BigNumber, { BN } from "@core/common/BigNumber";
+import { BigNumber, BN } from "@core/common/BigNumber";
 
 export class ItemDefinition {
     /** Unique id of the type of item */

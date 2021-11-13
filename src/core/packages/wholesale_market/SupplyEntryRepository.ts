@@ -2,7 +2,7 @@ import { FE, FilterOperators, Repository } from "@core/common/repository";
 import { IDBMemoryHybridRepository } from "@core/utils/IDBMemoryHybridRepository";
 import { SupplyEntry, SupplyEntryStatus } from "@core/packages/wholesale_market/SupplyEntry";
 import { FirmType } from "@core/common/FirmType";
-import BigNumber from "@core/common/BigNumber";
+import { BigNumber } from "@core/common/BigNumber";
 
 export type SupplyEntryFilterExpressions =
     | FE<"companyId", "=" | "!=", string>

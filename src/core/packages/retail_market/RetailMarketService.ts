@@ -4,7 +4,7 @@ import { SellingDataForCustomerMarket, ShopService } from "@core/packages/shop/S
 import groupBy from "lodash/groupBy";
 import { RETAIL_MARKET_DATA, RetailMarketData } from "@core/packages/retail_market/RetailMarketConstData";
 import { BN } from "@core/common/BigNumber";
-import BigNumber from "bignumber.js";
+import { BigNumber } from "bignumber.js";
 
 // TODO: better name
 type ProcessedSellingData = {

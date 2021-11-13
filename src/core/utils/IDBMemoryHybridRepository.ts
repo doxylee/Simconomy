@@ -9,7 +9,7 @@ import {
 } from "@core/common/repository";
 import { arrayWithTotal } from "@core/utils/arrayWithTotal";
 import { F } from "@core/common/F";
-import BigNumber from "@core/common/BigNumber";
+import { BigNumber } from "@core/common/BigNumber";
 
 const DEFAULT_QUERY_LIMIT = 20;
 

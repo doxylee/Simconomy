@@ -1,7 +1,7 @@
 import { FactoryRepository } from "@core/packages/factory/FactoryRepository";
 import { CompanyService } from "@core/packages/company/CompanyService";
 import { TurnProgressSystem } from "@core/systems/TurnProgressSystem";
-import BigNumber, { BN } from "@core/common/BigNumber";
+import { BigNumber, BN } from "@core/common/BigNumber";
 import { Factory } from "@core/packages/factory/Factory";
 import { ItemStorage } from "@core/packages/item/ItemStorage";
 import { FactoryProcess } from "@core/packages/factory/FactoryProcess";

@@ -11,7 +11,7 @@ import {ShopService} from "@core/packages/shop/ShopService";
 import {FirmType} from "@core/common/FirmType";
 import {ItemGroup} from "@core/packages/item/ItemGroup";
 import {SupplyEntry, SupplyEntryStatus} from "@core/packages/wholesale_market/SupplyEntry";
-import BigNumber from "@core/common/BigNumber";
+import { BigNumber } from "@core/common/BigNumber";
 import {ConflictException, EntityNotFoundException, UnexpectedError} from "@core/common/exceptions";
 import {WholesaleContract} from "@core/packages/wholesale_market/WholesaleContract";
 import {EntityBasicFilterExpression, EntityBasicSortableFields, SortExpression} from "@src/core/common/repository";

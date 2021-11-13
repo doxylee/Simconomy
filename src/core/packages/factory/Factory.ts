@@ -1,8 +1,7 @@
-import {Entity, EntityConstructionParam} from "@core/common/entity";
-import BigNumber, {BN} from "@core/common/BigNumber";
-import {ItemStorage} from "@core/packages/item/ItemStorage";
-import {FactoryProcess} from "@core/packages/factory/FactoryProcess";
-import {ItemGroup} from "@core/packages/item/ItemGroup";
+import { Entity, EntityConstructionParam } from "@core/common/entity";
+import { BigNumber } from "@core/common/BigNumber";
+import { ItemStorage } from "@core/packages/item/ItemStorage";
+import { FactoryProcess } from "@core/packages/factory/FactoryProcess";
 
 export class Factory extends Entity {
     entityType: "Factory" = "Factory";
@@ -24,6 +23,4 @@ export class Factory extends Entity {
         this.storage = storage;
         this.process = process;
     }
-    
-    
 }

@@ -1,5 +1,5 @@
 import { DataObject } from "@core/common/dataobject";
-import BigNumber from "@core/common/BigNumber";
+import { BigNumber } from "@core/common/BigNumber";
 
 type ItemBatch = { id: string; amount: BigNumber };
 
@@ -12,7 +12,7 @@ type ItemBatch = { id: string; amount: BigNumber };
  */
 export class FactoryProcess extends DataObject {
     id: string;
-    
+
     /**
      * Input materials for 1 unit of this process.
      * Item type must be distinct.

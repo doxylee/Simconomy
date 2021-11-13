@@ -1,4 +1,4 @@
-import BigNumber, { BN } from "@core/common/BigNumber";
+import { BigNumber, BN } from "@core/common/BigNumber";
 
 export type RetailMarketData = {
     itemId: string;

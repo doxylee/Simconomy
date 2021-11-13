@@ -3,7 +3,7 @@ import { IDBMemoryHybridRepository } from "@core/utils/IDBMemoryHybridRepository
 import { FE, FilterOperators } from "@core/common/repository";
 import { beforeAll, describe, expect, it } from "@jest/globals";
 import { ConflictException, EntityNotFoundException } from "@core/common/exceptions";
-import BigNumber, { BN } from "@core/common/BigNumber";
+import { BigNumber, BN } from "@core/common/BigNumber";
 import { arrayWithTotal } from "@core/utils/arrayWithTotal";
 import { F } from "@core/common/F";
 

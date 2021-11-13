@@ -1,5 +1,5 @@
 import { Entity, EntityConstructionParam } from "@core/common/entity";
-import BigNumber from "@core/common/BigNumber";
+import { BigNumber } from "@core/common/BigNumber";
 import { FirmType } from "@core/common/FirmType";
 
 export type SupplyEntryStatus = "public" | "private" | "closed";

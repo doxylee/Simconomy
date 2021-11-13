@@ -2,7 +2,7 @@ import { FE, FilterOperators, Repository } from "@core/common/repository";
 import { IDBMemoryHybridRepository } from "@core/utils/IDBMemoryHybridRepository";
 import { WholesaleContract, WholesaleContractStatus } from "@core/packages/wholesale_market/WholesaleContract";
 import { FirmType } from "@core/common/FirmType";
-import BigNumber from "@core/common/BigNumber";
+import { BigNumber } from "@core/common/BigNumber";
 
 type WholesaleContractFilterExpressions =
     | FE<"supplyEntryId", "=" | "!=", string>

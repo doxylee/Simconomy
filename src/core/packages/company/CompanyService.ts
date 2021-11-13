@@ -2,13 +2,13 @@ import { CompanyRepository } from "@core/packages/company/CompanyRepository";
 import { Company } from "@core/packages/company/Company";
 import { InvalidOperationException } from "@core/common/exceptions";
 import { F } from "@core/common/F";
-import BigNumber, { BN } from "@core/common/BigNumber";
+import { BigNumber, BN } from "@core/common/BigNumber";
 
 export class CompanyService {
     repository: CompanyRepository;
     userIdentity = {};
 
-    constructor({repository, userIdentity}:{repository: CompanyRepository, userIdentity : {}}) {
+    constructor({ repository, userIdentity }: { repository: CompanyRepository; userIdentity: {} }) {
         this.repository = repository;
         this.userIdentity = userIdentity;
     }

@@ -1,6 +1,6 @@
 import { FE, FilterOperators, Repository } from "@core/common/repository";
 import { Company } from "@core/packages/company/Company";
-import BigNumber from "@core/common/BigNumber";
+import { BigNumber } from "@core/common/BigNumber";
 import { IDBMemoryHybridRepository } from "@core/utils/IDBMemoryHybridRepository";
 
 type CompanyFilterExpressions = FE<"name", "=" | "!=", string> | FE<"cash", FilterOperators, BigNumber>;

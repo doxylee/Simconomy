@@ -1,5 +1,5 @@
 import { Entity, EntityConstructionParam } from "@core/common/entity";
-import BigNumber from "@core/common/BigNumber";
+import { BigNumber } from "@core/common/BigNumber";
 import { FirmType } from "@core/common/FirmType";
 import { SupplyEntry } from "@core/packages/wholesale_market/SupplyEntry";
 
