@@ -49,7 +49,7 @@ export class ItemGroup extends DataObject {
         if (!this.isCompatible(other)) throw new InvalidOperationException({ reason: "Incompatible itemgroup to add" });
         this.amount = this.amount.plus(other.amount);
     }
-    
+
     /**
      * Take items from this ItemGroup.
      *

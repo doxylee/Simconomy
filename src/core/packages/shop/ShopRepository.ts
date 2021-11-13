@@ -1,7 +1,7 @@
 import { FE, FilterOperators, Repository } from "@core/common/repository";
 import { BigNumber } from "@core/common/BigNumber";
 import { IDBMemoryHybridRepository } from "@core/utils/IDBMemoryHybridRepository";
-import {Shop} from "@core/packages/shop/Shop";
+import { Shop } from "@core/packages/shop/Shop";
 
 type ShopFilterExpressions = FE<"companyId", "=" | "!=", string> | FE<"size", FilterOperators, BigNumber>;
 

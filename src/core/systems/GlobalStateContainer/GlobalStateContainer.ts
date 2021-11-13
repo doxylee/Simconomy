@@ -24,14 +24,14 @@ export class GlobalStateContainer {
                 await this.repository.create(new GlobalState({ gameDate: DateTime.fromObject({ year: 1990, month: 1, day: 1 }) }));
         }
     }
-    
+
     /**
      * Get global state.
      */
     async getState() {
         return this.repository.read(GLOBAL_ENTITY_ID);
     }
-    
+
     /**
      * Update global state.
      *

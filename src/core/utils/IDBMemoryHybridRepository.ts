@@ -36,7 +36,7 @@ export class IDBMemoryHybridRepository<
     async save(params?: { saveAs?: string }) {
         throw "Not implemented";
     }
-    
+
     /**
      * Add an entity to the repository.
      *
@@ -48,7 +48,7 @@ export class IDBMemoryHybridRepository<
         this.store[entity.id] = entity.clone();
         return entity.clone();
     }
-    
+
     /**
      * Find an entity by its id.
      *
@@ -164,7 +164,7 @@ export class IDBMemoryHybridRepository<
 
         return entities; // Do nothing if no limit and no offset
     }
-    
+
     /**
      * Update an entity.
      * Parameter object must have an `id` parameter which designates which entity to update.
@@ -196,7 +196,7 @@ export class IDBMemoryHybridRepository<
 
         return original.clone();
     }
-    
+
     /**
      * Delete and entity by its id.
      *

@@ -1,7 +1,7 @@
-import {Entity, EntityConstructionParam} from "@core/common/entity";
+import { Entity, EntityConstructionParam } from "@core/common/entity";
 import { BigNumber } from "@core/common/BigNumber";
-import {ItemStorage} from "@core/packages/item/ItemStorage";
-import {SaleEntry} from "@core/packages/shop/SaleEntry";
+import { ItemStorage } from "@core/packages/item/ItemStorage";
+import { SaleEntry } from "@core/packages/shop/SaleEntry";
 
 export class Shop extends Entity {
     entityType: "Shop" = "Shop";

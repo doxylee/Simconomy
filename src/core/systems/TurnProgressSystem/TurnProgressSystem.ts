@@ -17,7 +17,7 @@ export class TurnProgressSystem {
     initialize({ globalStateContainer }: { globalStateContainer: GlobalStateContainer }) {
         this.globalStateContainer = globalStateContainer;
     }
-    
+
     /**
      * Register callback function to be called on turn progress.
      *
@@ -29,7 +29,7 @@ export class TurnProgressSystem {
             throw new ConflictException({ reason: `Turn progress callback ${callbackName} already registered.` });
         this.turnProgressCallbacks[callbackName] = callbackFunction;
     }
-    
+
     /**
      * Progress 1 turn of the game.
      */

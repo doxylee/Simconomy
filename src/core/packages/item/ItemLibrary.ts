@@ -28,11 +28,11 @@ const ITEM_DEF_LIST = [
     new ItemDefinition({ id: "plastic", basePrice: BN(1.1), mass: BN(1), volume: BN(0.001_000) }), // price verified, density varies 0.9~1.5
 
     new ItemDefinition({ id: "electronicComponents", basePrice: BN(1), mass: BN(0.02), volume: BN(0.000_050) }), // TODO: no ref, price will vary greatly on type or quality. very small unit. about 5x5cm square?
-    
+
     // Bigger volume due to packaging
     new ItemDefinition({ id: "goldRing", basePrice: BN(300), mass: BN(0.004), volume: BN(0.000_150) }),
-    new ItemDefinition({ id: "watch", basePrice: BN(30), mass: BN(0.100), volume: BN(0.000_250) }),
-    new ItemDefinition({ id: "electronicWatch", basePrice: BN(20), mass: BN(0.050), volume: BN(0.000_250) }),
+    new ItemDefinition({ id: "watch", basePrice: BN(30), mass: BN(0.1), volume: BN(0.000_250) }),
+    new ItemDefinition({ id: "electronicWatch", basePrice: BN(20), mass: BN(0.05), volume: BN(0.000_250) }),
 ];
 
 // TODO: freeze definitions if needed
