@@ -1,5 +1,11 @@
 class StructuredException extends Error {
     name: string = "StructuredException";
+    pureMessage?: string = undefined;
+    data?: object = undefined;
+
+    createMessage() {
+        return `${this.pureMessage}${this.data ? ` \nData: ${JSON.stringify(this.data)}` : ""}`;
+    }
 }
 
 export class EntityNotFoundException extends StructuredException {
@@ -11,7 +17,8 @@ export class EntityNotFoundException extends StructuredException {
         super();
         this.entityType = entityType;
         this.entityId = entityId;
-        this.message = `Entity with id "${this.entityId}" of type ${this.entityType} is not found`;
+        this.pureMessage = `Entity with id "${this.entityId}" of type ${this.entityType} is not found`;
+        this.message = this.createMessage();
     }
 }
 
@@ -19,10 +26,12 @@ export class InvalidOperationException extends StructuredException {
     name: "InvalidOperationException" = "InvalidOperationException";
     reason: string;
 
-    constructor({ reason }: { reason: string }) {
+    constructor({ reason, data }: { reason: string; data?: object }) {
         super();
         this.reason = reason;
-        this.message = `Invalid operation occurred. Reason: ${this.reason}`;
+        this.pureMessage = `Invalid operation occurred. Reason: ${this.reason}`;
+        this.data = data;
+        this.message = this.createMessage();
     }
 }
 
@@ -30,10 +39,12 @@ export class ConflictException extends StructuredException {
     name: "ConflictException" = "ConflictException";
     reason: string;
 
-    constructor({ reason }: { reason: string }) {
+    constructor({ reason, data }: { reason: string; data?: object }) {
         super();
         this.reason = reason;
-        this.message = `Conflict occurred. Reason: ${this.reason}`;
+        this.pureMessage = `Conflict occurred. Reason: ${this.reason}`;
+        this.data = data;
+        this.message = this.createMessage();
     }
 }
 
@@ -44,10 +55,12 @@ export class UnexpectedError extends StructuredException {
     name: "UnexpectedError" = "UnexpectedError";
     reason: string;
 
-    constructor({ reason }: { reason: string }) {
+    constructor({ reason, data }: { reason: string; data?: object }) {
         super();
         this.reason = reason;
-        this.message = `Error that should never happen occurred! Reason: ${this.reason}`;
+        this.pureMessage = `Error that should never happen occurred! Reason: ${this.reason}`;
+        this.data = data;
+        this.message = this.createMessage();
     }
 }
 
