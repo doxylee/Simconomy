@@ -9,7 +9,7 @@ import { ItemGroup } from "@core/packages/item/ItemGroup";
 import { ItemLibrary } from "@core/packages/item/ItemLibrary";
 
 const FACTORY_PRICE_PER_SIZE = 100000;
-const FACTORY_PRICE_PER_STORAGE_VOLUME = 10000;
+const FACTORY_PRICE_PER_STORAGE_VOLUME = 1000;
 
 export class FactoryService {
     repository: FactoryRepository;
@@ -102,6 +102,7 @@ export class FactoryService {
      *
      * @param id
      * @param process
+     * @returns updated factory entity
      * @throws EntityNotFoundException
      */
     async setFactoryProcess({ id, process }: { id: string; process: FactoryProcess }) {
