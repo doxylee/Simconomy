@@ -44,7 +44,8 @@ export class CompanyService {
      */
     async useCashOneTime({ id, amount }: { id: string; amount: BigNumber }) {
         const company = await this.repository.read(id);
-        if (amount > company.cash) throw new InvalidOperationException({ reason: "Not enough cash" });
+        if (amount.gt(company.cash))
+            throw new InvalidOperationException({ reason: "Not enough cash", data: { cashLeft: company.cash, amount } });
         return this.repository.update({ id, cash: new F({ add: amount.negated() }) });
     }
 
