@@ -106,6 +106,16 @@ export class WholesaleMarketService {
         return this.supplyEntryRepository.create(newSupplyEntry);
     }
 
+    private async throwIfItemGroupAlreadyRegistered(itemGroupId: string, firmId: string) {
+        const supplyEntryOfSameItemGroupQuery = await this.supplyEntryRepository.query({
+            filter: [["itemGroupId", "=", itemGroupId]],
+            limit: 0,
+            showTotal: true,
+        });
+        if (supplyEntryOfSameItemGroupQuery.total > 0)
+            throw new ConflictException({ reason: `SupplyEntry for given ItemGroup ${firmId} : ${itemGroupId} already exists` });
+    }
+
     /**
      * Update supply data such as price
      *
@@ -182,6 +192,22 @@ export class WholesaleMarketService {
         return this.wholesaleContractRepository.create(newContract);
     }
 
+    private async throwIfSameContractExists(supplyId: string, buyerFirmId: string) {
+        const sameContractQuery = await this.wholesaleContractRepository.query({
+            filter: [
+                ["supplyEntryId", "=", supplyId],
+                ["buyerFirmId", "=", buyerFirmId],
+            ],
+            limit: 0,
+            showTotal: true,
+        });
+
+        if (sameContractQuery.total > 0)
+            throw new ConflictException({
+                reason: `WholesaleContract for supply ${supplyId} and buyer firm ${buyerFirmId} already exists`,
+            });
+    }
+
     /**
      * Get all contracts that given firm is the supplier.
      *
@@ -216,32 +242,6 @@ export class WholesaleMarketService {
         supplyEntries.forEach((supplyEntry) => this.progressTurnForSupplyEntry(supplyEntry));
     }
 
-    private async throwIfItemGroupAlreadyRegistered(itemGroupId: string, firmId: string) {
-        const supplyEntryOfSameItemGroupQuery = await this.supplyEntryRepository.query({
-            filter: [["itemGroupId", "=", itemGroupId]],
-            limit: 0,
-            showTotal: true,
-        });
-        if (supplyEntryOfSameItemGroupQuery.total > 0)
-            throw new ConflictException({ reason: `SupplyEntry for given ItemGroup ${firmId} : ${itemGroupId} already exists` });
-    }
-
-    private async throwIfSameContractExists(supplyId: string, buyerFirmId: string) {
-        const sameContractQuery = await this.wholesaleContractRepository.query({
-            filter: [
-                ["supplyEntryId", "=", supplyId],
-                ["buyerFirmId", "=", buyerFirmId],
-            ],
-            limit: 0,
-            showTotal: true,
-        });
-
-        if (sameContractQuery.total > 0)
-            throw new ConflictException({
-                reason: `WholesaleContract for supply ${supplyId} and buyer firm ${buyerFirmId} already exists`,
-            });
-    }
-
     private async progressTurnForSupplyEntry(supplyEntry: SupplyEntry) {
         const supplyItemGroup = await this.getSupplyItemGroup(supplyEntry.firmType, supplyEntry.firmId, supplyEntry.itemGroupId);
         const contracts = await this.wholesaleContractRepository.query({
@@ -268,7 +268,8 @@ export class WholesaleMarketService {
                 return (await this.factoryService.getFactory(firmId)).storage.getItemGroup(itemGroupId);
             default:
                 throw new UnexpectedError({
-                    reason: `getSupplierItemGroup shouldn't have been called with ${firmType} type firm ${firmId}`,
+                    reason: `getSupplierItemGroup shouldn't have been called with the firm type.`,
+                    data: { firmType, firmId },
                 });
         }
     }
