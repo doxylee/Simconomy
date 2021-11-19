@@ -23,4 +23,6 @@ export class Factory extends Entity {
         this.storage = storage;
         this.process = process;
     }
+    
+    // TODO: FactoryProcess doesn't have to be cloned. Optimization opportunity.
 }
