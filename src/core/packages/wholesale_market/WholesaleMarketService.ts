@@ -16,6 +16,7 @@ import { ConflictException, EntityNotFoundException, UnexpectedError } from "@co
 import { WholesaleContract } from "@core/packages/wholesale_market/WholesaleContract";
 import { EntityBasicFilterExpression, EntityBasicSortableFields, SortExpression } from "@src/core/common/repository";
 import partition from "lodash/partition";
+import { LocalSupplierService } from "@core/packages/local_supplier/LocalSupplierService";
 
 export class WholesaleMarketService {
     supplyEntryRepository: SupplyEntryRepository;
@@ -25,6 +26,7 @@ export class WholesaleMarketService {
     turnProgressSystem!: TurnProgressSystem;
     companyService!: CompanyService;
     factoryService!: FactoryService;
+    localSupplierService!: LocalSupplierService;
     shopService!: ShopService;
 
     constructor({
@@ -45,16 +47,19 @@ export class WholesaleMarketService {
         turnProgressSystem,
         companyService,
         factoryService,
+        localSupplierService,
         shopService,
     }: {
         turnProgressSystem: TurnProgressSystem;
         companyService: CompanyService;
         factoryService: FactoryService;
+        localSupplierService: LocalSupplierService;
         shopService: ShopService;
     }) {
         this.turnProgressSystem = turnProgressSystem;
         this.companyService = companyService;
         this.factoryService = factoryService;
+        this.localSupplierService = localSupplierService;
         this.shopService = shopService;
 
         turnProgressSystem.registerCallback("wholesaleStep", this.progressTurn.bind(this));
@@ -313,6 +318,8 @@ export class WholesaleMarketService {
         switch (firmType) {
             case "factory":
                 return this.factoryService.sellItem({ factoryId: firmId, itemGroupId, amount, price: totalPrice });
+            case "localSupplier":
+                return this.localSupplierService.sellItem({ localSupplierId: firmId, itemGroupId, amount, price: totalPrice });
             default:
                 throw new UnexpectedError({
                     reason: `sellItemFromSupplier shouldn't have been called with ${firmType} type firm ${firmId}`,
