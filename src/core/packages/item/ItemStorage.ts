@@ -9,17 +9,17 @@ export class ItemStorage extends DataObject {
      * More than this volume can be stored, but it causes additional costs.
      */
     maxVolume: BigNumber; // TODO: incur additional cost
-    
+
     /**
      * ItemGroups in this storage.
      * Must not delete empty ItemGroup, and use existing item groups whenever possible.
      * This is because other services depend on the groupId of ItemGroup.
      */
     items: ItemGroup[]; // TODO: ItemGroup.def don't have to be cloned. Optimization opportunity.
-    
+
     /** Used volume of storage in m³. */
     volume: BigNumber;
-    
+
     /**
      *
      * @param maxVolume
@@ -34,11 +34,11 @@ export class ItemStorage extends DataObject {
         this.syncVolume();
         if (this.volume.gt(this.maxVolume)) throw new InvalidOperationException({ reason: "Max storage volume exceeded" });
     }
-    
+
     private syncVolume() {
         this.volume = this.items.reduce((acc, itemGroup) => acc.plus(itemGroup.volume), BN(0));
     }
-    
+
     /**
      * Add ItemGroup to storage.
      * Add as new ItemGroup or merge to compatible ItemGroup if exists.
@@ -51,7 +51,7 @@ export class ItemStorage extends DataObject {
         else this.items.push(itemGroup);
         this.syncVolume();
     }
-    
+
     /**
      * Find an ItemGroup in this storage by its id.
      *
@@ -63,7 +63,7 @@ export class ItemStorage extends DataObject {
         if (itemGroup === undefined) throw new EntityNotFoundException({ entityType: "ItemGroup", entityId: id });
         return itemGroup;
     }
-    
+
     /**
      * Take items from requested itemgroup in this storage.
      *
@@ -77,7 +77,7 @@ export class ItemStorage extends DataObject {
         this.syncVolume();
         return takenItems;
     }
-    
+
     /**
      * Get all ItemGroups of given item type.
      *

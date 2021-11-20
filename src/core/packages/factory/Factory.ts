@@ -9,20 +9,20 @@ export class Factory extends Entity {
     size: BigNumber;
     storage: ItemStorage;
     process: FactoryProcess | null;
-    
+
     constructor({
-                    companyId,
-                    size,
-                    storage,
-                    process = null,
-                    ...data
-                }: Pick<Factory, "companyId" | "size" | "storage"> & Partial<Pick<Factory, "process">> & EntityConstructionParam) {
+        companyId,
+        size,
+        storage,
+        process = null,
+        ...data
+    }: Pick<Factory, "companyId" | "size" | "storage"> & Partial<Pick<Factory, "process">> & EntityConstructionParam) {
         super(data);
         this.companyId = companyId;
         this.size = size;
         this.storage = storage;
         this.process = process;
     }
-    
+
     // TODO: FactoryProcess doesn't have to be cloned. Optimization opportunity.
 }

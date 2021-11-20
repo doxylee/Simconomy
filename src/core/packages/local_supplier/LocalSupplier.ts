@@ -6,12 +6,12 @@ export class LocalSupplier extends Entity {
     companyId: string;
     itemId: string;
     sellingItemTemplate: ItemGroup;
-    
+
     constructor({
-                    companyId,
-                    sellingItemTemplate,
-                    ...data
-                }: Pick<LocalSupplier, "companyId" | "sellingItemTemplate"> & EntityConstructionParam) {
+        companyId,
+        sellingItemTemplate,
+        ...data
+    }: Pick<LocalSupplier, "companyId" | "sellingItemTemplate"> & EntityConstructionParam) {
         super(data);
         this.companyId = companyId;
         this.itemId = sellingItemTemplate.def.id;

@@ -11,14 +11,14 @@ export class Shop extends Entity {
     // TODO: traffic: BigNumber;
     storage: ItemStorage;
     selling: SaleEntry[];
-    
+
     constructor({
-                    companyId,
-                    size,
-                    storage,
-                    selling = [],
-                    ...data
-                }: Pick<Shop, "companyId" | "size" | "storage"> & Partial<Pick<Shop, "selling">> & EntityConstructionParam) {
+        companyId,
+        size,
+        storage,
+        selling = [],
+        ...data
+    }: Pick<Shop, "companyId" | "size" | "storage"> & Partial<Pick<Shop, "selling">> & EntityConstructionParam) {
         super(data);
         this.companyId = companyId;
         this.size = size;
