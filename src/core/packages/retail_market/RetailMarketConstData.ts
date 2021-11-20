@@ -16,7 +16,7 @@ const RETAIL_MARKET_DATA_LIST: RetailMarketData[] = [
         dailyDemand: BN(5000),
         baseRetailPrice: BN(300),
         localSupplier: {
-            size: BN(5000),
+            size: BN(500),
             price: BN(500),
         },
     },
@@ -25,7 +25,7 @@ const RETAIL_MARKET_DATA_LIST: RetailMarketData[] = [
         dailyDemand: BN(10000),
         baseRetailPrice: BN(30),
         localSupplier: {
-            size: BN(10000),
+            size: BN(100),
             price: BN(50),
         },
     },
@@ -34,7 +34,7 @@ const RETAIL_MARKET_DATA_LIST: RetailMarketData[] = [
         dailyDemand: BN(10000),
         baseRetailPrice: BN(20),
         localSupplier: {
-            size: BN(10000),
+            size: BN(100),
             price: BN(40),
         },
     },
