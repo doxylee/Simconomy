@@ -239,7 +239,7 @@ export class WholesaleMarketService {
             showTotal: false,
         });
 
-        supplyEntries.forEach((supplyEntry) => this.progressTurnForSupplyEntry(supplyEntry));
+        await Promise.all(supplyEntries.map((supplyEntry) => this.progressTurnForSupplyEntry(supplyEntry)));
     }
 
     private async progressTurnForSupplyEntry(supplyEntry: SupplyEntry) {
@@ -265,6 +265,8 @@ export class WholesaleMarketService {
         switch (firmType) {
             case "factory":
                 return (await this.factoryService.getFactory(firmId)).storage.getItemGroup(itemGroupId);
+            case "localSupplier":
+                return (await this.localSupplierService.getLocalSupplier(firmId)).sellingItemTemplate;
             default:
                 throw new UnexpectedError({
                     reason: `getSupplierItemGroup shouldn't have been called with the firm type.`,
