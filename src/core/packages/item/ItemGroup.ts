@@ -57,7 +57,7 @@ export class ItemGroup extends DataObject {
      * @throws InvalidOperationException - Insufficient amount of items in ItemGroup
      */
     take(amount: BigNumber) {
-        if (this.amount < amount) throw new InvalidOperationException({ reason: "Insufficient amount of items in ItemGroup" });
+        if (this.amount.lt(amount)) throw new InvalidOperationException({ reason: "Insufficient amount of items in ItemGroup" });
 
         this.amount = this.amount.minus(amount);
         this.volume = this.def.volume.times(this.amount);

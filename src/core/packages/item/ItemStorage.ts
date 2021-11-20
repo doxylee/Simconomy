@@ -32,7 +32,7 @@ export class ItemStorage extends DataObject {
         this.items = items;
         this.volume = this.items.reduce((acc, itemGroup) => acc.plus(itemGroup.volume), BN(0));
         
-        if (this.volume > this.maxVolume) throw new InvalidOperationException({reason: "Max storage volume exceeded"});
+        if (this.volume.gt(this.maxVolume)) throw new InvalidOperationException({reason: "Max storage volume exceeded"});
     }
     
     /**

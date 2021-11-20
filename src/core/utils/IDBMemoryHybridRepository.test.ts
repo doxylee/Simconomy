@@ -209,10 +209,11 @@ describe("IDBMemoryHybridRepository", () => {
     describe(".query", () => {
         const repository = createTestRepository();
         const entities = new Array(12).fill(null).map((x, idx) => new TestEntity({ id: idx.toString() }));
+        const bigNumberGenPrefixes = [5, 4, 3, 2, 1, 50, 40, 30, 20, 10, 500, 400];
         entities.forEach((e, i) => {
             e.numberField = i % 3;
             e.nullableStringField = [null, "a", "b", "c"][(i / 3) >> 0];
-            e.bigNumberField = BN(5 - (i % 4) + "00000000000000000000000000000000000000000000000000000000000000000.1234567890");
+            e.bigNumberField = BN(bigNumberGenPrefixes[i] + "00000000000000000000000000000000000000000000000000000000000000000.1234567890");
         });
 
         beforeAll(async () => {
@@ -242,12 +243,29 @@ describe("IDBMemoryHybridRepository", () => {
                     3
                 )
             );
+        });
 
+        it("returns correctly filtered objects even if filtered by BigNumber fields", async () => {
             const bignumber = BN("300000000000000000000000000000000000000000000000000000000000000000.1234567890");
+
             await expect(repository.query({ filter: [["bigNumberField", ">=", bignumber]] })).resolves.toEqual(
                 arrayWithTotal(
-                    entities.filter((e) => (e.bigNumberField ?? 0) >= bignumber),
-                    9
+                    entities.filter((e) => (e.bigNumberField ?? BN(0)).gte(bignumber)),
+                    10
+                )
+            );
+
+            await expect(repository.query({ filter: [["bigNumberField", "=", bignumber]] })).resolves.toEqual(
+                arrayWithTotal(
+                    entities.filter((e) => (e.bigNumberField ?? BN(0)).eq(bignumber)),
+                    1
+                )
+            );
+
+            await expect(repository.query({ filter: [["bigNumberField", "!=", bignumber]] })).resolves.toEqual(
+                arrayWithTotal(
+                    entities.filter((e) => !(e.bigNumberField ?? BN(0)).eq(bignumber)),
+                    11
                 )
             );
         });
@@ -264,6 +282,28 @@ describe("IDBMemoryHybridRepository", () => {
             await expect(repository.query({ sort: ["numberField"] })).resolves.toEqual(
                 arrayWithTotal(
                     entities.slice().sort((a, b) => a.numberField - b.numberField),
+                    12
+                )
+            );
+        });
+
+        it("returns correctly sorted objects even if sorted by BigNumber fields", async () => {
+            await expect(repository.query({ sort: ["bigNumberField"] })).resolves.toEqual(
+                arrayWithTotal(
+                    entities.slice().sort((a, b) => (a.bigNumberField ?? BN(-Infinity)).comparedTo(b.bigNumberField ?? BN(-Infinity))),
+                    12
+                )
+            );
+        });
+
+        it("can sort by multiple fields", async () => {
+            await expect(repository.query({ sort: ["numberField", "bigNumberField"] })).resolves.toEqual(
+                arrayWithTotal(
+                    entities.slice().sort((a, b) => {
+                        if (a.numberField > b.numberField) return 1;
+                        if (a.numberField < b.numberField) return -1;
+                        return (a.bigNumberField ?? BN(-Infinity)).comparedTo(b.bigNumberField ?? BN(-Infinity));
+                    }),
                     12
                 )
             );

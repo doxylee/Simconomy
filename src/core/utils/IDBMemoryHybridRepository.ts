@@ -115,28 +115,62 @@ export class IDBMemoryHybridRepository<
     }
 
     private applyFilter(entities: E[], filter: (FES | EntityBasicFilterExpression)[]) {
-        const filterFunc = (e: E) =>
-            filter?.every(([name, op, val]) => {
-                // TODO: change switch to Record<operator, callback>
-                // TODO: use BigNumber.comparedTo method for 4 times faster execution
-                switch (op) {
-                    case "=":
-                        return e[name] === val;
-                    case "!=":
-                        return e[name] !== val;
-                    case ">":
-                        return e[name] > val;
-                    case ">=":
-                        return e[name] >= val;
-                    case "<":
-                        return e[name] < val;
-                    case "<=":
-                        return e[name] <= val;
-                    default:
-                        throw new UnexpectedError({ reason: `Unknown filter operation '${op}' requested.` });
-                }
-            });
+        const filterFunc = (e: E) => filter?.every((filterExpr) => this.doesSatisfyFilterExpression(e, filterExpr));
         return entities.filter(filterFunc);
+    }
+
+    private doesSatisfyFilterExpression(e: E, filterExpr: FES | EntityBasicFilterExpression) {
+        const [name, op, val] = filterExpr; // TODO: Type is hard to maintain
+        if (BigNumber.isBigNumber(val)) return this.doesSatisfyBigNumberFilterExpression(e, [name, op, val]);
+        return this.doesSatisfyGeneralFilterExpression(e, filterExpr);
+    }
+
+    private doesSatisfyGeneralFilterExpression(e: E, [name, op, val]: FES | EntityBasicFilterExpression) {
+        // TODO: change switch to Record<operator, callback>
+        const fieldValue = e[name];
+        switch (op) {
+            case "=":
+                return fieldValue === val;
+            case "!=":
+                return fieldValue !== val;
+            case ">":
+                return fieldValue > val;
+            case ">=":
+                return fieldValue >= val;
+            case "<":
+                return fieldValue < val;
+            case "<=":
+                return fieldValue <= val;
+            default:
+                this.throwUnknownFilterOperatorError(op);
+        }
+    }
+
+    private doesSatisfyBigNumberFilterExpression(
+        e: E,
+        [name, op, val]: FilterExpression<Extract<keyof E, string> | "id", (FES | EntityBasicFilterExpression)[1], BigNumber>
+    ) {
+        const fieldValue = e[name] as unknown as BigNumber;
+        switch (op) {
+            case "=":
+                return fieldValue.eq(val);
+            case "!=":
+                return !fieldValue.eq(val);
+            case ">":
+                return fieldValue.gt(val);
+            case ">=":
+                return fieldValue.gte(val);
+            case "<":
+                return fieldValue.lt(val);
+            case "<=":
+                return fieldValue.lte(val);
+            default:
+                this.throwUnknownFilterOperatorError(op);
+        }
+    }
+
+    private throwUnknownFilterOperatorError(op: (FES | EntityBasicFilterExpression)[1]) {
+        throw new UnexpectedError({ reason: `Unknown filter operation '${op}' requested.` });
     }
 
     private applySort(entities: E[], sort: SortExpression<SS | EntityBasicSortableFields>[]) {
@@ -145,15 +179,25 @@ export class IDBMemoryHybridRepository<
             name: (s.charAt(0) === "+" || s.charAt(0) === "-" ? s.slice(1) : s) as keyof E,
         }));
 
-        const sortFunc = (e1: E, e2: E) => {
-            for (const { asc, name } of parsedSort) {
-                // TODO: use BigNumber.comparedTo method for 4 times faster execution
-                if (e1[name] > e2[name]) return asc;
-                if (e1[name] < e2[name]) return -asc;
-            }
-            return 0;
-        };
+        const sortFunc = (e1: E, e2: E) => this.compareBySortExpression(e1, e2, parsedSort);
         entities.sort(sortFunc);
+    }
+
+    private compareBySortExpression(e1: E, e2: E, parsedSort: { asc: 1 | -1; name: keyof E }[]) {
+        // TODO: Can't detect type of the field. Have to infer from the value, which can be null.
+        //  Maybe add something like field definition perhaps?
+        for (const { asc, name } of parsedSort) {
+            const v1 = e1[name] ?? -Infinity;
+            const v2 = e2[name] ?? -Infinity;
+
+            // If v1 is BigNumber, override type system and assert v2 is always BigNumber or -Infinity (null).
+            if (BigNumber.isBigNumber(v1)) return v1.comparedTo(v2 as unknown as BigNumber | number) * asc;
+            if (BigNumber.isBigNumber(v2)) return v2.comparedTo(v1 as number) * -asc;
+
+            if (e1[name] > e2[name]) return asc;
+            if (e1[name] < e2[name]) return -asc;
+        }
+        return 0;
     }
 
     private applyLimitOffset(entities: E[], limit: number | null, offset: number) {
