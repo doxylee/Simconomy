@@ -12,4 +12,6 @@ export class GlobalStateIDBMemoryHybridRepository extends IDBMemoryHybridReposit
     GlobalState,
     GlobalStateFilterExpressions,
     GlobalStateSortableFields
-> {}
+> {
+    entityType: "GlobalState" = "GlobalState";
+}

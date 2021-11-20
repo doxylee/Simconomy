@@ -12,4 +12,6 @@ export class LocalSupplierIDBMemoryHybridRepository extends IDBMemoryHybridRepos
     LocalSupplier,
     LocalSupplierFilterExpressions,
     LocalSupplierSortableFields
-> {}
+> {
+    entityType: "LocalSupplier" = "LocalSupplier";
+}

@@ -9,4 +9,6 @@ type ShopSortableFields = "companyId" | "size";
 
 export interface ShopRepository extends Repository<Shop, ShopFilterExpressions, ShopSortableFields> {}
 
-export class ShopIDBMemoryHybridRepository extends IDBMemoryHybridRepository<Shop, ShopFilterExpressions, ShopSortableFields> {}
+export class ShopIDBMemoryHybridRepository extends IDBMemoryHybridRepository<Shop, ShopFilterExpressions, ShopSortableFields> {
+    entityType: "Shop" = "Shop";
+}

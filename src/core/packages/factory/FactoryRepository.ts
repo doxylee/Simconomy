@@ -9,4 +9,6 @@ type FactorySortableFields = "companyId" | "size";
 
 export interface FactoryRepository extends Repository<Factory, FactoryFilterExpressions, FactorySortableFields> {}
 
-export class FactoryIDBMemoryHybridRepository extends IDBMemoryHybridRepository<Factory, FactoryFilterExpressions, FactorySortableFields> {}
+export class FactoryIDBMemoryHybridRepository extends IDBMemoryHybridRepository<Factory, FactoryFilterExpressions, FactorySortableFields> {
+    entityType: "Factory" = "Factory";
+}

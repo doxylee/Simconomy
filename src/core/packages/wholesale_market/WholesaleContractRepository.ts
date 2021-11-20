@@ -26,4 +26,6 @@ export class WholesaleContractIDBMemoryHybridRepository extends IDBMemoryHybridR
     WholesaleContract,
     WholesaleContractFilterExpressions,
     WholesaleContractSortableFields
-> {}
+> {
+    entityType: "WholesaleContract" = "WholesaleContract";
+}

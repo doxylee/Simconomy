@@ -22,4 +22,6 @@ export class SupplyEntryIDBMemoryHybridRepository extends IDBMemoryHybridReposit
     SupplyEntry,
     SupplyEntryFilterExpressions,
     SupplyEntrySortableFields
-> {}
+> {
+    entityType: "SupplyEntry" = "SupplyEntry";
+}

@@ -9,4 +9,6 @@ type CompanySortableFields = "name" | "cash";
 
 export interface CompanyRepository extends Repository<Company, CompanyFilterExpressions, CompanySortableFields> {}
 
-export class CompanyIDBMemoryHybridRepository extends IDBMemoryHybridRepository<Company, CompanyFilterExpressions, CompanySortableFields> {}
+export class CompanyIDBMemoryHybridRepository extends IDBMemoryHybridRepository<Company, CompanyFilterExpressions, CompanySortableFields> {
+    entityType: "Company" = "Company";
+}
