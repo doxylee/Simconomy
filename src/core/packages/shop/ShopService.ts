@@ -8,8 +8,8 @@ import { ItemGroup } from "@core/packages/item/ItemGroup";
 import { Shop } from "@core/packages/shop/Shop";
 import { SaleEntry } from "@core/packages/shop/SaleEntry";
 
-const SHOP_PRICE_PER_SIZE = 200000;
-const SHOP_PRICE_PER_STORAGE_VOLUME = 20000;
+const SHOP_PRICE_PER_SIZE = 400000;
+const SHOP_PRICE_PER_STORAGE_VOLUME = 1000;
 
 export type SellingDataForCustomerMarket = {
     shopId: string;
