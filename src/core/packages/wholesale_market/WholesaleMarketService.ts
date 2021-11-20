@@ -252,9 +252,8 @@ export class WholesaleMarketService {
             limit: null,
             showTotal: false,
         });
-        const [activeContracts, terminatedContracts] = partition(
-            contracts,
-            (c) => c.startPrice.plus(c.priceIncreaseLimit) <= supplyEntry.price
+        const [activeContracts, terminatedContracts] = partition(contracts, (c) =>
+            c.startPrice.plus(c.priceIncreaseLimit).gte(supplyEntry.price)
         );
         await Promise.all(terminatedContracts.map((c) => this.wholesaleContractRepository.update({ id: c.id, status: "terminated" })));
 
