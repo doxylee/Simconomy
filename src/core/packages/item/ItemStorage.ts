@@ -26,13 +26,17 @@ export class ItemStorage extends DataObject {
      * @param items
      * @throws InvalidOperationException - volume of items is bigger than maxVolume
      */
-    constructor({maxVolume, items = []}: { maxVolume: BigNumber; items?: ItemGroup[] }) {
+    constructor({ maxVolume, items = [] }: { maxVolume: BigNumber; items?: ItemGroup[] }) {
         super();
         this.maxVolume = maxVolume;
         this.items = items;
+        this.volume = BN(0);
+        this.syncVolume();
+        if (this.volume.gt(this.maxVolume)) throw new InvalidOperationException({ reason: "Max storage volume exceeded" });
+    }
+    
+    private syncVolume() {
         this.volume = this.items.reduce((acc, itemGroup) => acc.plus(itemGroup.volume), BN(0));
-        
-        if (this.volume.gt(this.maxVolume)) throw new InvalidOperationException({reason: "Max storage volume exceeded"});
     }
     
     /**
@@ -45,6 +49,7 @@ export class ItemStorage extends DataObject {
         const compatibleItemGroup = this.items.find((i) => i.isCompatible(itemGroup));
         if (compatibleItemGroup) compatibleItemGroup.add(itemGroup);
         else this.items.push(itemGroup);
+        this.syncVolume();
     }
     
     /**
@@ -55,7 +60,7 @@ export class ItemStorage extends DataObject {
      */
     getItemGroup(id: string) {
         const itemGroup = this.items.find((i) => i.groupId === id);
-        if (itemGroup === undefined) throw new EntityNotFoundException({entityType: "ItemGroup", entityId: id});
+        if (itemGroup === undefined) throw new EntityNotFoundException({ entityType: "ItemGroup", entityId: id });
         return itemGroup;
     }
     
@@ -67,8 +72,10 @@ export class ItemStorage extends DataObject {
      * @throws EntityNotFoundException
      * @throws InvalidOperationException - Insufficient amount of items in ItemGroup
      */
-    takeItems({itemGroupId, amount}: { itemGroupId: string; amount: BigNumber }) {
-        return this.getItemGroup(itemGroupId).take(amount);
+    takeItems({ itemGroupId, amount }: { itemGroupId: string; amount: BigNumber }) {
+        const takenItems = this.getItemGroup(itemGroupId).take(amount);
+        this.syncVolume();
+        return takenItems;
     }
     
     /**
