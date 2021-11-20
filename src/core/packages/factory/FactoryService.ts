@@ -181,9 +181,9 @@ export class FactoryService {
     async progressTurn() {
         const factories = await this.repository.query({ limit: null, showTotal: false });
         for (const factory of factories) {
-            const runningCost = this.manufactureAndReturnCost(factory);
+            const manufactureCost = this.manufactureAndReturnCost(factory);
             await this.repository.update({ id: factory.id, storage: factory.storage });
-            await this.companyService.useCashFixed({ id: factory.companyId, amount: runningCost });
+            await this.companyService.useCashFixed({ id: factory.companyId, amount: manufactureCost });
         }
     }
 
@@ -228,6 +228,8 @@ export class FactoryService {
                 ? factory.storage.maxVolume.minus(factory.storage.volume).div(volumeChangePerManufactureUnit)
                 : BN(Infinity)
         );
+
+        if (manufactureCount.eq(0)) return BN(0);
 
         // TODO: product quality logic
         // reduce input materials
