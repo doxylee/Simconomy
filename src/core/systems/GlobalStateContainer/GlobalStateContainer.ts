@@ -21,7 +21,12 @@ export class GlobalStateContainer {
             await this.repository.read(GLOBAL_ENTITY_ID);
         } catch (e) {
             if (isServiceException(e) && e.name === "EntityNotFoundException")
-                await this.repository.create(new GlobalState({ gameDate: DateTime.fromObject({ year: 1990, month: 1, day: 1 }) }));
+                await this.repository.create(
+                    new GlobalState({
+                        id: GLOBAL_ENTITY_ID,
+                        gameDate: DateTime.fromObject({ year: 1990, month: 1, day: 1 }),
+                    })
+                );
         }
     }
 
