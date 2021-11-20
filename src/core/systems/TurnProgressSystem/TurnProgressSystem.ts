@@ -39,5 +39,12 @@ export class TurnProgressSystem {
             if (callback === undefined) throw new UnexpectedError({ reason: `Turn progress callback ${callbackName} is not registered.` });
             await callback();
         }
+        await this.addOneDay();
+    }
+
+    private async addOneDay() {
+        const globalState = await this.globalStateContainer.getState();
+        globalState.gameDate.plus({ day: 1 });
+        await this.globalStateContainer.setState(globalState);
     }
 }
