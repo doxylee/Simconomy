@@ -108,7 +108,7 @@ export class RetailMarketService {
             const demandForThisShop = remainingDemand.times(supplyPoint).dividedToIntegerBy(totalSupplyPoints);
             const salesVolume = BigNumber.min(demandForThisShop, amount);
             // TODO: optimization opportunity
-            await this.shopService.sellItem({ shopId, itemGroupId, amount: salesVolume, price });
+            await this.shopService.sellItem({ shopId, itemGroupId, amount: salesVolume, totalPrice: price });
             totalSupplyPoints = totalSupplyPoints.minus(supplyPoint);
             remainingDemand = remainingDemand.minus(salesVolume);
         }

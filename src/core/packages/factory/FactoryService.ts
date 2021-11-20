@@ -135,7 +135,7 @@ export class FactoryService {
      * @param factoryId
      * @param itemGroupId
      * @param amount
-     * @param price
+     * @param totalPrice
      * @throws EntityNotFoundException
      * @throws InvalidOperationException - Insufficient amount of items in ItemGroup
      */
@@ -143,12 +143,12 @@ export class FactoryService {
         factoryId,
         itemGroupId,
         amount,
-        price,
+        totalPrice,
     }: {
         factoryId: string;
         itemGroupId: string;
         amount: BigNumber;
-        price: BigNumber;
+        totalPrice: BigNumber;
     }) {
         const factory = await this.repository.read(factoryId);
 
@@ -156,7 +156,7 @@ export class FactoryService {
         await this.repository.update(factory);
         // TODO: Optimization opportunity
 
-        await this.companyService.gainRevenue({ id: factory.companyId, amount: price });
+        await this.companyService.gainRevenue({ id: factory.companyId, amount: totalPrice });
 
         return items;
     }

@@ -317,7 +317,7 @@ export class WholesaleMarketService {
     private async sellItemFromSupplier(firmType: FirmType, firmId: string, itemGroupId: string, amount: BigNumber, totalPrice: BigNumber) {
         switch (firmType) {
             case "factory":
-                return this.factoryService.sellItem({ factoryId: firmId, itemGroupId, amount, price: totalPrice });
+                return this.factoryService.sellItem({ factoryId: firmId, itemGroupId, amount, totalPrice });
             case "localSupplier":
                 return this.localSupplierService.sellItem({ localSupplierId: firmId, itemGroupId, amount, price: totalPrice });
             default:

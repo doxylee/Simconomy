@@ -145,18 +145,28 @@ export class ShopService {
      * @param shopId
      * @param itemGroupId
      * @param amount
-     * @param price
+     * @param totalPrice
      * @throws EntityNotFoundException
      * @throws InvalidOperationException - Insufficient amount of items in ItemGroup
      */
-    async sellItem({ shopId, itemGroupId, amount, price }: { shopId: string; itemGroupId: string; amount: BigNumber; price: BigNumber }) {
+    async sellItem({
+        shopId,
+        itemGroupId,
+        amount,
+        totalPrice,
+    }: {
+        shopId: string;
+        itemGroupId: string;
+        amount: BigNumber;
+        totalPrice: BigNumber;
+    }) {
         const shop = await this.repository.read(shopId);
 
         const items = shop.storage.takeItems({ itemGroupId, amount });
         await this.repository.update(shop);
         // TODO: Optimization opportunity
 
-        await this.companyService.gainRevenue({ id: shop.companyId, amount: price });
+        await this.companyService.gainRevenue({ id: shop.companyId, amount: totalPrice });
 
         return items;
     }
