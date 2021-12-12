@@ -1,7 +1,19 @@
 import type { AppProps } from "next/app";
 
+import { CacheProvider } from "@emotion/react";
+import createCache from "@emotion/cache";
+
 import "tailwindcss/tailwind.css";
 
+const cache = createCache({
+    key: "css",
+    prepend: true,
+});
+
 export default function SimconomyApp({ Component, pageProps }: AppProps) {
-    return <Component {...pageProps} />;
+    return (
+        <CacheProvider value={cache}>
+            <Component {...pageProps} />
+        </CacheProvider>
+    );
 }
