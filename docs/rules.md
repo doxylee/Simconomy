@@ -1,7 +1,7 @@
 # 규칙
 
 - 커밋 메시지는 명령형(imperative)으로 작성한다.
-- 커밋 메시지는 [Udacity Git Commit Message Style Guide](https://udacity.github.io/git-styleguide/)를 기본으로 삼고, 아래 종류를 추가한다.
+- 커밋 메시지는 [Udacity Git Commit Message Style Guide](https://udacity.github.io/git-styleguide/) 를 기본으로 삼고, 아래 종류를 추가한다.
   - balance: 인게임 데이터 밸런스 변경
 - 프로젝트가 커지기 전까지 develop 브랜치를 따로 만들지 않는다.
 - 코드 스타일은 prettier에 따른다.
