@@ -25,7 +25,8 @@
       "@core/*": [
         "src/core/*"
       ]
-    }
+    },
+    "incremental": true
   },
   "include": [
     "next-env.d.ts",
