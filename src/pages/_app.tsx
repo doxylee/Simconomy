@@ -13,7 +13,11 @@ const cache = createCache({
 export default function SimconomyApp({ Component, pageProps }: AppProps) {
     return (
         <CacheProvider value={cache}>
-            <Component {...pageProps} />
+            <ThemeProvider theme={theme}>
+                <LayoutWrapper>
+                    <Component {...pageProps} />
+                </LayoutWrapper>
+            </ThemeProvider>
         </CacheProvider>
     );
 }
