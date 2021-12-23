@@ -1,6 +1,6 @@
 import { Card, CardActionArea, CardContent, IconButton } from "@mui/material";
 import { DateTime } from "luxon";
-import CloseIcon from "@mui/icons-material/close";
+import CloseIcon from "@mui/icons-material/Close";
 import { SaveType } from "@src/utils/saves";
 
 interface Props {
