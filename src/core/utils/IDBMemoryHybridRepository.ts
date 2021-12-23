@@ -10,8 +10,10 @@ import {
 import { arrayWithTotal } from "@core/utils/arrayWithTotal";
 import { F } from "@core/common/F";
 import { BigNumber } from "@core/common/BigNumber";
+import { openDB } from "idb";
 
 const DEFAULT_QUERY_LIMIT = 20;
+const IDB_STORE_NAME = "storage";
 
 export class IDBMemoryHybridRepository<
     E extends Entity,
@@ -28,13 +30,41 @@ export class IDBMemoryHybridRepository<
         this.store = {};
     }
 
-    static async open({ gameId }: { gameId: string }) {
-        const repository = new this({ gameId });
-        throw "Not implemented";
+    async open() {
+        const db = await openDB(this.gameId, 1, {
+            // TODO: configurable version
+            upgrade(db) {
+                const store = db.createObjectStore(IDB_STORE_NAME);
+            },
+        });
+        const res = await db.get(IDB_STORE_NAME, this.entityType);
+        this.setStoreFromRecords(res);
     }
 
-    async save(params?: { saveAs?: string }) {
-        throw "Not implemented";
+    private setStoreFromRecords(records: Record<string, any>) {
+        this.store = Object.fromEntries(Object.entries(records).map(([k, v]) => [k, this.entityFromRecord(v)]));
+    }
+
+    entityFromRecord(record: any) {
+        return record;
+    }
+
+    async save() {
+        const db = await openDB(this.gameId, 1, {
+            // TODO: configurable id
+            upgrade(db) {
+                const store = db.createObjectStore(IDB_STORE_NAME);
+            },
+        });
+        await db.put(IDB_STORE_NAME, this.getRecordsFromStore(), this.entityType);
+    }
+
+    private getRecordsFromStore() {
+        return Object.fromEntries(Object.entries(this.store).map(([k, v]) => [k, this.recordFromEntity(v)]));
+    }
+
+    recordFromEntity(entity: E) {
+        return { ...entity };
     }
 
     /**

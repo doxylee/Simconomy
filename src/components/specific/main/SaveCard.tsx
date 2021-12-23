@@ -1,26 +1,28 @@
 import { Card, CardActionArea, CardContent, IconButton } from "@mui/material";
 import { DateTime } from "luxon";
 import CloseIcon from "@mui/icons-material/close";
+import { SaveType } from "@src/utils/saves";
 
 interface Props {
-    saveName: string;
-    saveDate: DateTime;
+    save: SaveType;
+    loadGame: (save: SaveType) => void;
+
     className?: string;
 }
 
-export default function SaveCard({ className, saveName, saveDate }: Props) {
+export default function SaveCard({ save, loadGame, className }: Props) {
     return (
-        <Card className={className}>
-            <CardActionArea>
+        <Card className={"flex items-center " + className}>
+            <CardActionArea onClick={() => loadGame(save)}>
                 <CardContent className="flex flex-row items-center space-x-2">
-                    <div className="font-bold">{saveName}</div>
+                    <div className="font-bold">{save.name}</div>
                     <div className="grow" />
-                    <div>{saveDate.toLocaleString(DateTime.DATETIME_SHORT)}</div>
-                    <IconButton>
-                        <CloseIcon />
-                    </IconButton>
+                    <div>{save.savedAt.toLocaleString(DateTime.DATETIME_SHORT)}</div>
                 </CardContent>
             </CardActionArea>
+            <IconButton>
+                <CloseIcon />
+            </IconButton>
         </Card>
     );
 }
