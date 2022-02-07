@@ -1,5 +1,5 @@
 import BigNumber, { BN } from "@core/common/BigNumber";
-import { Tooltip } from "@mui/material";
+import { VerticalBarIndicator } from "@src/components/common/VerticalBarIndicator";
 
 type Props = {
     total: BigNumber;
@@ -9,20 +9,17 @@ type Props = {
 };
 
 export function StorageVerticalGraph({ total, product = BN(0), material = BN(0), others = BN(0) }: Props) {
-    const getPercent = (volume: BigNumber) => volume.div(total).times(100).toFixed(0) + "%";
+    const getValue = (volume: BigNumber) => volume.div(total).toNumber();
 
     return (
-        <div className="flex flex-col w-4 items-stretch border border-gray-300">
-            <div className="grow" />
-            <Tooltip title={"Product"} placement="left" arrow>
-                <div className="bg-blue-400" style={{ height: getPercent(product) }} />
-            </Tooltip>
-            <Tooltip title={"Material"} placement="left" arrow>
-                <div className="bg-yellow-300" style={{ height: getPercent(material) }} />
-            </Tooltip>
-            <Tooltip title={"Others"} placement="left" arrow>
-                <div className="bg-gray-400" style={{ height: getPercent(others) }} />
-            </Tooltip>
-        </div>
+        <VerticalBarIndicator
+            values={[
+                { value: getValue(product), className: "bg-blue-400", tooltip: "Product" },
+                { value: getValue(material), className: "bg-yellow-300", tooltip: "Material" },
+                { value: getValue(others), className: "bg-gray-400", tooltip: "Others" },
+            ]}
+            styleClassOverride="w-4 border border-gray-300"
+            tooltipPlacement="right"
+        />
     );
 }
