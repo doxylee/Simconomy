@@ -1,4 +1,3 @@
-import { InvalidOperationException } from "@core/common/exceptions";
 import { BigNumber } from "@core/common/BigNumber";
 import { ShopRepository } from "@core/packages/shop/ShopRepository";
 import { CompanyService } from "@core/packages/company/CompanyService";
@@ -7,6 +6,7 @@ import { ItemStorage } from "@core/packages/item/ItemStorage";
 import { ItemGroup } from "@core/packages/item/ItemGroup";
 import { Shop } from "@core/packages/shop/Shop";
 import { SaleEntry } from "@core/packages/shop/SaleEntry";
+import { Service } from "@core/common/Service";
 
 const SHOP_PRICE_PER_SIZE = 400000;
 const SHOP_PRICE_PER_STORAGE_VOLUME = 1000;
@@ -19,7 +19,7 @@ export type SellingDataForCustomerMarket = {
     price: BigNumber;
 };
 
-export class ShopService {
+export class ShopService extends Service {
     repository: ShopRepository;
     userIdentity = {};
 
@@ -27,8 +27,10 @@ export class ShopService {
     companyService!: CompanyService;
 
     constructor({ repository, userIdentity }: { repository: ShopRepository; userIdentity: {} }) {
+        super();
         this.repository = repository;
         this.userIdentity = userIdentity;
+        this.bindMethods();
     }
 
     initialize({ turnProgressSystem, companyService }: { turnProgressSystem: TurnProgressSystem; companyService: CompanyService }) {

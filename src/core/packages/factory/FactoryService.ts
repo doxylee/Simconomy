@@ -7,11 +7,12 @@ import { ItemStorage } from "@core/packages/item/ItemStorage";
 import { FactoryProcess } from "@core/packages/factory/FactoryProcess";
 import { ItemGroup } from "@core/packages/item/ItemGroup";
 import { ItemLibrary } from "@core/packages/item/ItemLibrary";
+import { Service } from "@core/common/Service";
 
 const FACTORY_PRICE_PER_SIZE = 100000;
 const FACTORY_PRICE_PER_STORAGE_VOLUME = 1000;
 
-export class FactoryService {
+export class FactoryService extends Service {
     repository: FactoryRepository;
     userIdentity = {};
 
@@ -20,8 +21,10 @@ export class FactoryService {
     itemLibrary!: ItemLibrary;
 
     constructor({ repository, userIdentity }: { repository: FactoryRepository; userIdentity: {} }) {
+        super();
         this.repository = repository;
         this.userIdentity = userIdentity;
+        this.bindMethods();
     }
 
     /**

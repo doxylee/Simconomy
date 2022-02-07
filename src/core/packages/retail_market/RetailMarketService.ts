@@ -5,6 +5,7 @@ import groupBy from "lodash/groupBy";
 import { RETAIL_MARKET_DATA, RetailMarketData } from "@core/packages/retail_market/RetailMarketConstData";
 import { BN } from "@core/common/BigNumber";
 import { BigNumber } from "bignumber.js";
+import { Service } from "@src/core/common/Service";
 
 // TODO: better name
 type ProcessedSellingData = {
@@ -16,7 +17,7 @@ type ProcessedSellingData = {
     amountPerSupplyPoint: BigNumber;
 };
 
-export class RetailMarketService {
+export class RetailMarketService extends Service {
     userIdentity = {};
 
     turnProgressSystem!: TurnProgressSystem;
@@ -24,7 +25,9 @@ export class RetailMarketService {
     shopService!: ShopService;
 
     constructor({ userIdentity }: { userIdentity: {} }) {
+        super();
         this.userIdentity = userIdentity;
+        this.bindMethods();
     }
 
     initialize({

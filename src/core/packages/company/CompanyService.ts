@@ -3,14 +3,17 @@ import { Company } from "@core/packages/company/Company";
 import { InvalidOperationException } from "@core/common/exceptions";
 import { F } from "@core/common/F";
 import { BigNumber, BN } from "@core/common/BigNumber";
+import { Service } from "@core/common/Service";
 
-export class CompanyService {
+export class CompanyService extends Service {
     repository: CompanyRepository;
     userIdentity = {};
 
     constructor({ repository, userIdentity }: { repository: CompanyRepository; userIdentity: {} }) {
+        super();
         this.repository = repository;
         this.userIdentity = userIdentity;
+        this.bindMethods();
     }
 
     /**

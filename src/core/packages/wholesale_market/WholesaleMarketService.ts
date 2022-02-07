@@ -17,8 +17,9 @@ import { WholesaleContract } from "@core/packages/wholesale_market/WholesaleCont
 import { EntityBasicFilterExpression, EntityBasicSortableFields, SortExpression } from "@src/core/common/repository";
 import partition from "lodash/partition";
 import { LocalSupplierService } from "@core/packages/local_supplier/LocalSupplierService";
+import { Service } from "@core/common/Service";
 
-export class WholesaleMarketService {
+export class WholesaleMarketService extends Service {
     supplyEntryRepository: SupplyEntryRepository;
     wholesaleContractRepository: WholesaleContractRepository;
     userIdentity = {};
@@ -38,9 +39,11 @@ export class WholesaleMarketService {
         wholesaleContractRepository: WholesaleContractRepository;
         userIdentity: {};
     }) {
+        super();
         this.supplyEntryRepository = supplyEntryRepository;
         this.wholesaleContractRepository = wholesaleContractRepository;
         this.userIdentity = userIdentity;
+        this.bindMethods();
     }
 
     initialize({

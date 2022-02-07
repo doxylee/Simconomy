@@ -5,8 +5,9 @@ import { ItemGroup } from "@core/packages/item/ItemGroup";
 import { ItemLibrary } from "@core/packages/item/ItemLibrary";
 import { LocalSupplierRepository } from "@core/packages/local_supplier/LocalSupplierRepository";
 import { LocalSupplier } from "@core/packages/local_supplier/LocalSupplier";
+import { Service } from "@core/common/Service";
 
-export class LocalSupplierService {
+export class LocalSupplierService extends Service {
     repository: LocalSupplierRepository;
     userIdentity = {};
 
@@ -15,8 +16,10 @@ export class LocalSupplierService {
     itemLibrary!: ItemLibrary;
 
     constructor({ repository, userIdentity }: { repository: LocalSupplierRepository; userIdentity: {} }) {
+        super();
         this.repository = repository;
         this.userIdentity = userIdentity;
+        this.bindMethods();
     }
 
     /**
