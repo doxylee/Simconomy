@@ -101,4 +101,8 @@ export class FactoryProcessLibrary {
     getAllFactoryProcesses() {
         return Object.values(FACTORY_PROCESS_DEFINITIONS);
     }
+
+    getFactoryProcessById(id: string) {
+        return FACTORY_PROCESS_DEFINITIONS[id];
+    }
 }

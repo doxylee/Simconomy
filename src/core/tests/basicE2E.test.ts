@@ -19,7 +19,7 @@ describe("Basic e2e scenario", () => {
         expect(company.cash).toEqual(BN(10_000_000 - 100_000 - 10 * 1000));
 
         // set factory process
-        const goldRingProcess = adapter.factoryProcessLibrary.getAllFactoryProcesses().find((p) => p.id === "goldRing");
+        const goldRingProcess = adapter.factoryProcessLibrary.getFactoryProcessById("goldRing");
         expect(goldRingProcess).not.toBe(undefined);
 
         factory_1 = await adapter.factoryService.setFactoryProcess({ id: factory_1.id, process: goldRingProcess as FactoryProcess });
