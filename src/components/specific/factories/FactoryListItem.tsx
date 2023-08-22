@@ -4,6 +4,7 @@ import { useCore } from "@src/utils/useCore";
 import { nFormat, toPercent } from "@src/utils/numberPresentation";
 import { StorageVerticalGraph } from "@src/components/specific/factories/StorageVerticalGraph";
 import { BN } from "@core/common/BigNumber";
+import Link from "next/link";
 
 interface Props {
     factory: Factory;
@@ -36,75 +37,79 @@ export default function FactoryListItem({ factory, className }: Props) {
 
     return (
         <Card className={className}>
-            <CardActionArea>
-                <CardContent className="flex flex-row items-stretch space-x-4">
-                    <div className="basis-40">
-                        <div className="text-2xl">Factory</div>
-                        <div className="text-base">Seoul</div>
-                        <div className="text-base">size: {factory.size.toString()}</div>
-                        <div className="text-base">eff:</div>
-                    </div>
-                    <Divider orientation="vertical" flexItem />
-
-                    <div className="flex space-x-2">
-                        <div className="w-32 h-32 bg-gray-300" />
-                        <div>
-                            {primaryProduct ? (
-                                <>
-                                    <div className="text-2xl">{primaryProduct.id}</div>
-                                    <div className="text-base">🎁 ${primaryProduct.basePrice.toPrecision(3)}</div>
-                                    <div className="text-base">📦 ${baseCost!.toPrecision(3)}</div>
-                                    <div className="text-base">quality, brand</div>
-                                </>
-                            ) : (
-                                <div className="text-lg">No product</div>
-                            )}
-                        </div>
-                    </div>
-                    <Divider orientation="vertical" flexItem />
-
-                    <div className="grow">
-                        <div className="flex justify-between">
-                            <div>Revenue</div>
-                            <div></div>
-                        </div>
-                    </div>
-                    <Divider orientation="vertical" flexItem />
-
-                    <div className="grow">
-                        <div className="flex justify-between">
-                            <div>Profit</div>
-                            <div></div>
-                        </div>
-                    </div>
-                    <Divider orientation="vertical" flexItem />
-
-                    <div className="flex space-x-2">
-                        <StorageVerticalGraph
-                            total={storage.maxVolume}
-                            product={outputItemsVolume}
-                            material={inputItemsVolume}
-                            others={storage.volume.minus(outputItemsVolume).minus(inputItemsVolume)}
-                        />
-                        <div>
-                            <div>
-                                <span className="text-xl">{toPercent(storage.volume.div(storage.maxVolume))} </span>
-                                <span className="text-sm">
-                                    ({nFormat(storage.volume, { d: 2 })}/{nFormat(storage.maxVolume, { d: 2 })} m³)
-                                </span>
+            <Link href={{ pathname: "/factories/[id]", query: { id: factory.id } }}>
+                <a>
+                    <CardActionArea>
+                        <CardContent className="flex flex-row items-stretch space-x-4">
+                            <div className="basis-40">
+                                <div className="text-2xl">Factory</div>
+                                <div className="text-base">Seoul</div>
+                                <div className="text-base">size: {factory.size.toString()}</div>
+                                <div className="text-base">eff:</div>
                             </div>
-                            <div>
-                                <span className="text-base">🎁 {toPercent(outputItemsVolume.div(storage.maxVolume))} </span>
-                                <span className="text-sm">({nFormat(outputItemsVolume, { d: 3 })} m³)</span>
+                            <Divider orientation="vertical" flexItem />
+
+                            <div className="flex space-x-2">
+                                <div className="w-32 h-32 bg-gray-300" />
+                                <div>
+                                    {primaryProduct ? (
+                                        <>
+                                            <div className="text-2xl">{primaryProduct.id}</div>
+                                            <div className="text-base">🎁 ${primaryProduct.basePrice.toPrecision(3)}</div>
+                                            <div className="text-base">📦 ${baseCost!.toPrecision(3)}</div>
+                                            <div className="text-base">quality, brand</div>
+                                        </>
+                                    ) : (
+                                        <div className="text-lg">No product</div>
+                                    )}
+                                </div>
                             </div>
-                            <div>
-                                <span className="text-base">📦 {toPercent(inputItemsVolume.div(storage.maxVolume))} </span>
-                                <span className="text-sm">({nFormat(inputItemsVolume, { d: 3 })} m³)</span>
+                            <Divider orientation="vertical" flexItem />
+
+                            <div className="grow">
+                                <div className="flex justify-between">
+                                    <div>Revenue</div>
+                                    <div></div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </CardContent>
-            </CardActionArea>
+                            <Divider orientation="vertical" flexItem />
+
+                            <div className="grow">
+                                <div className="flex justify-between">
+                                    <div>Profit</div>
+                                    <div></div>
+                                </div>
+                            </div>
+                            <Divider orientation="vertical" flexItem />
+
+                            <div className="flex space-x-2">
+                                <StorageVerticalGraph
+                                    total={storage.maxVolume}
+                                    product={outputItemsVolume}
+                                    material={inputItemsVolume}
+                                    others={storage.volume.minus(outputItemsVolume).minus(inputItemsVolume)}
+                                />
+                                <div>
+                                    <div>
+                                        <span className="text-xl">{toPercent(storage.volume.div(storage.maxVolume))} </span>
+                                        <span className="text-sm">
+                                            ({nFormat(storage.volume, { d: 2 })}/{nFormat(storage.maxVolume, { d: 2 })} m³)
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span className="text-base">🎁 {toPercent(outputItemsVolume.div(storage.maxVolume))} </span>
+                                        <span className="text-sm">({nFormat(outputItemsVolume, { d: 3 })} m³)</span>
+                                    </div>
+                                    <div>
+                                        <span className="text-base">📦 {toPercent(inputItemsVolume.div(storage.maxVolume))} </span>
+                                        <span className="text-sm">({nFormat(inputItemsVolume, { d: 3 })} m³)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </CardActionArea>
+                </a>
+            </Link>
         </Card>
     );
 }

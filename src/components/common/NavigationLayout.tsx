@@ -5,12 +5,18 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useSaveGame } from "@src/utils/saves";
 import { useSnackbar } from "notistack";
+import Link from "next/link";
+import { UrlObject } from "url";
 
 interface Props {
     children: React.ReactNode;
 }
 
-const NavigationButton = ({ text }: { text: string }) => <Button className="text-white text-xl hover:bg-blue-200/25 mr-2">{text}</Button>;
+const NavigationButton = ({ text, href }: { text: string; href: UrlObject }) => (
+    <Link href={href}>
+        <Button className="text-white text-xl hover:bg-blue-200/25 mr-2">{text}</Button>
+    </Link>
+);
 
 export default function NavigationLayout({ children }: Props) {
     const saveGame = useSaveGame();
@@ -26,15 +32,15 @@ export default function NavigationLayout({ children }: Props) {
     };
 
     return (
-        <div>
+        <div className="flex flex-col min-h-screen">
             <AppBar position="static" className="bg-neutral-900 ">
                 <Toolbar variant="dense">
                     <IconButton size="large" edge="start" className="text-white">
                         <MenuIcon />
                     </IconButton>
-                    <NavigationButton text={"Dashboard"} />
-                    <NavigationButton text={"Factories"} />
-                    <NavigationButton text={"Shops"} />
+                    <NavigationButton text={"Dashboard"} href={{}} />
+                    <NavigationButton text={"Factories"} href={{pathname:"/factories"}}/>
+                    <NavigationButton text={"Shops"} href={{}}/>
                     <div className="grow" />
                     <div className="flex flex-row items-center">
                         <div>2020.12.12</div>
@@ -68,7 +74,7 @@ export default function NavigationLayout({ children }: Props) {
                     </Menu>
                 </Toolbar>
             </AppBar>
-            <main>{children}</main>
+            {children}
         </div>
     );
 }

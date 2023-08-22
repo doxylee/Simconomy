@@ -5,6 +5,7 @@ import { SaveType, useGetSaves } from "@src/utils/saves";
 import { useSetCore } from "@src/utils/useCore";
 import { ReactAdapter } from "@src/adapter/ReactAdapter";
 import { useRouter } from "next/router";
+import { runDummyScenario } from "@src/dummy/useDummyData";
 
 const START_PAGE_URL_OBJ = { pathname: "/factories" };
 
@@ -17,6 +18,7 @@ export default function MainPage() {
     const newGame = async () => {
         const core = new ReactAdapter();
         await core.initialize();
+        await runDummyScenario(core);
         setCore(core);
         await router.push(START_PAGE_URL_OBJ);
     };
@@ -33,7 +35,7 @@ export default function MainPage() {
             <CommonHeader />
 
             <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
-                <h1 className="text-8xl font-bold mb-24">Simconomy</h1>
+                <h1 className="text-8xl font-bold mb-24">Title</h1>
                 <Button
                     variant={"contained"}
                     className="p-4 w-160 mb-12 bg-green-400 hover:bg-green-500 text-white text-base font-bold"

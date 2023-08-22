@@ -1,7 +1,7 @@
 import { DataObject } from "@core/common/dataobject";
 import { BigNumber } from "@core/common/BigNumber";
 
-type ItemBatch = { id: string; amount: BigNumber };
+export type ItemBatch = { id: string; amount: BigNumber };
 
 /**
  * Recipe for manufacturing products in the factory.

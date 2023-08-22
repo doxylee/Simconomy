@@ -131,6 +131,16 @@ export class WholesaleMarketService extends Service {
     }
 
     /**
+     * Get SupplyEntry with id.
+     *
+     * @param id
+     * @throws EntityNotFoundException
+     */
+    async getSupplyEntry(id:string) {
+        return this.supplyEntryRepository.read(id);
+    }
+
+    /**
      * Get all SupplyEntries of firm
      *
      * @param firmId

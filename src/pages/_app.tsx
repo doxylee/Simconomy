@@ -11,6 +11,7 @@ import { CoreProvider } from "@src/utils/useCore";
 import { useEffect, useState } from "react";
 import { ReactAdapter } from "@src/adapter/ReactAdapter";
 import { SnackbarProvider } from "notistack";
+import { runDummyScenario, useDummyData } from "@src/dummy/useDummyData";
 
 const cache = createCache({
     key: "css",
@@ -29,9 +30,10 @@ export default function SimconomyApp({ Component, pageProps }: AppProps) {
     const [core, setCore] = useState<ReactAdapter | null>(null);
     useEffect(() => {
         const core = new ReactAdapter();
-        core.initialize().then(() => {
-            setCore(core);
-        });
+        window.core = core;
+        core.initialize()
+            .then(() => runDummyScenario(core))
+            .then(() => setCore(core));
     }, []);
 
     return (

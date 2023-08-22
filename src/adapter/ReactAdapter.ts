@@ -36,6 +36,8 @@ export class ReactAdapter {
     shopService: ShopService;
     wholesaleMarketService: WholesaleMarketService;
 
+    userCompanyId!: string;
+
     constructor({ gameId = uuid4() }: { gameId?: string } = {}) {
         this.gameId = gameId;
 
@@ -79,6 +81,11 @@ export class ReactAdapter {
         ];
     }
 
+    private bindMethods(){
+        this.setUserCompanyId = this.setUserCompanyId.bind(this);
+        this.getUserCompanyId = this.getUserCompanyId.bind(this);
+    }
+
     async load() {
         await Promise.all(this.repositories.map((repo) => repo.open()));
     }
@@ -104,5 +111,13 @@ export class ReactAdapter {
         const localSupplierGenerator = new LocalSupplierGenerator();
         localSupplierGenerator.initialize(this);
         await localSupplierGenerator.generateLocalSuppliers();
+    }
+
+    setUserCompanyId(id: string) {
+        this.userCompanyId = id;
+    }
+
+    getUserCompanyId() {
+        return this.userCompanyId;
     }
 }
